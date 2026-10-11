@@ -1,7 +1,7 @@
 <% const ka = lang === 'ka'; %>
 <%- include('_top', { pageTitle: ka ? 'ელემენტები' : 'Cells', action: { href: '/admin/cells/new', label: ka ? 'ელემენტის დამატება' : 'Add cells' } }) %>
 
-<form method="get" class="card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]">
+<form method="get" class="card mb-4 grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]">
   <label class="relative"><span class="sr-only"><%= t('common.search') %></span>
     <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-forest-300">search</span>
     <input class="input pl-10" name="q" value="<%= filters.q %>" placeholder="<%= ka ? 'კოდი ან შენიშვნა…' : 'Code or note…' %>">

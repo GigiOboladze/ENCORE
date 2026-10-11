@@ -3,7 +3,7 @@
 <%- include('partials/header') %>
 <main id="main" class="container-x pt-10">
   <a href="/products" class="inline-flex items-center gap-1 text-sm font-medium text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-lime-300"><span class="material-symbols-outlined text-base">arrow_back</span><%= t('products.title') %></a>
-  <div class="mt-6 grid gap-10 lg:grid-cols-2">
+  <div class="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-2">
     <div>
       <div class="overflow-hidden rounded-[1.75rem] border border-forest-100 bg-white shadow-card dark:border-graphite-600 dark:bg-graphite-800">
         <% if (p.photos[0]) { %>

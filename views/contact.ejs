@@ -8,7 +8,7 @@
     <p class="mt-3 text-ink-soft dark:text-forest-300"><%= t('contact.subtitle') %></p>
   </div>
 
-  <div class="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
+  <div class="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_1fr]">
     <div class="card card-pad" data-tabs>
       <% if (sent) { %>
         <div class="mb-5 flex items-start gap-3 rounded-xl bg-lime-100 p-4 text-sm text-forest-900 dark:bg-lime-400/15 dark:text-lime-200" role="status"><span class="material-symbols-outlined">check_circle</span><%= t('contact.sent') %></div>
@@ -23,7 +23,7 @@
       </div>
 
       <% ['handin', 'contact'].forEach(kind => { const f = (form && (tab === kind)) ? form : {}; %>
-        <form method="post" action="/contact" data-panel="<%= kind %>" class="<%= tab === kind ? '' : 'hidden' %> grid gap-4 sm:grid-cols-2">
+        <form method="post" action="/contact" data-form="contact" data-sent="<%= t('contact.sent') %>" data-error="<%= t('errors.form') %>" data-panel="<%= kind %>" class="<%= tab === kind ? '' : 'hidden' %> grid grid-cols-1 gap-4 sm:grid-cols-2">
           <input type="hidden" name="type" value="<%= kind %>">
           <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
           <label class="field sm:col-span-2"><span class="field-label"><%= t('contact.name') %> *</span><input class="input" name="name" required maxlength="120" value="<%= f.name || '' %>" autocomplete="name"></label>
@@ -53,7 +53,7 @@
       <div class="card-dark p-6">
         <h2 class="font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300"><%= t('contact.info') %></h2>
         <ul class="mt-4 space-y-4 text-sm">
-          <li class="flex gap-3"><span class="material-symbols-outlined text-lime-300">call</span><div><div class="text-forest-200/70"><%= t('contact.phone') %></div><a class="font-medium hover:text-lime-300" href="tel:<%= site.phone.replace(/[^+\d]/g, '') %>"><%= site.phone %></a></div></li>
+          <li class="flex gap-3"><span class="material-symbols-outlined text-lime-300">call</span><div><div class="text-forest-200/70"><%= t('contact.phone') %></div><a class="font-medium hover:text-lime-300" <% if (telHref) { %>href="<%= telHref %>"<% } %>><%= site.phone %></a></div></li>
           <li class="flex gap-3"><span class="material-symbols-outlined text-lime-300">mail</span><div><div class="text-forest-200/70"><%= t('contact.email') %></div><a class="font-medium hover:text-lime-300" href="mailto:<%= site.email %>"><%= site.email %></a></div></li>
           <li class="flex gap-3"><span class="material-symbols-outlined text-lime-300">location_on</span><div><div class="text-forest-200/70"><%= t('contact.address') %></div><span class="font-medium"><%= L(site, 'address') %></span></div></li>
           <li class="flex gap-3"><span class="material-symbols-outlined text-lime-300">schedule</span><div><div class="text-forest-200/70"><%= t('contact.hours') %></div><span class="font-medium"><%= L(site, 'hours') %></span></div></li>

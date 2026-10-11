@@ -1,6 +1,6 @@
 <% const ka = lang === 'ka'; %>
 <%- include('_top', { pageTitle: ka ? 'პროდუქტები' : 'Products', action: { href: '/admin/products/new', label: ka ? 'პროდუქტის დამატება' : 'Add product' } }) %>
-<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
   <% products.forEach(p => { %>
     <div class="card flex flex-col overflow-hidden">
       <div class="relative aspect-[4/3] bg-mint-100 dark:bg-graphite-700">

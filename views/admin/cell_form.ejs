@@ -9,11 +9,11 @@
   </div>
 <% } %>
 
-<form method="post" action="<%= editing ? '/admin/cells/' + cell.id : '/admin/cells' %>" enctype="multipart/form-data" data-cell-form data-editing="<%= editing ? 1 : 0 %>" class="grid gap-5 xl:grid-cols-[1fr_340px]">
+<form method="post" action="<%= editing ? '/admin/cells/' + cell.id : '/admin/cells' %>" enctype="multipart/form-data" data-cell-form data-editing="<%= editing ? 1 : 0 %>" class="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_340px]">
   <div class="space-y-5">
     <section class="card card-pad">
       <h2 class="label-mono">01 · <%= ka ? 'ელემენტის ტიპი' : 'Cell type' %></h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label class="field"><span class="field-label"><%= t('fields.chemistry') %> *</span>
           <select class="input" name="chemistry"><% C.CHEMISTRIES.forEach(s => { %><option value="<%= s %>" <%= cell.chemistry === s ? 'selected' : '' %>><%= s === 'other' ? t('chem.other') : s %></option><% }) %></select>
         </label>
@@ -28,11 +28,11 @@
 
     <section class="card card-pad">
       <h2 class="label-mono">02 · <%= ka ? 'ზომა (ტევადობა) და რაოდენობა' : 'Size (capacity) and quantity' %></h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div class="field"><span class="field-label"><%= t('fields.capacity') %> *</span>
           <div class="flex gap-2">
-            <input class="input" name="capacity_value" inputmode="decimal" required value="<%= v('capacity_value') %>" placeholder="3400" aria-label="<%= t('fields.capacity') %>">
-            <select class="input !w-24 shrink-0" name="capacity_unit" aria-label="Unit"><% C.UNITS.forEach(u => { %><option <%= cell.capacity_unit === u ? 'selected' : '' %>><%= u %></option><% }) %></select>
+            <input class="input min-w-0" name="capacity_value" inputmode="decimal" required value="<%= v('capacity_value') %>" placeholder="3400" aria-label="<%= t('fields.capacity') %>">
+            <select class="input !w-[6.5rem] shrink-0" name="capacity_unit" aria-label="Unit"><% C.UNITS.forEach(u => { %><option <%= cell.capacity_unit === u ? 'selected' : '' %>><%= u %></option><% }) %></select>
           </div>
         </div>
         <label class="field"><span class="field-label"><%= t('fields.quantity') %> (<%= t('common.pcs') %>) *</span><input class="input" name="quantity" type="number" min="1" required value="<%= v('quantity') %>"></label>
@@ -42,7 +42,7 @@
 
     <section class="card card-pad">
       <h2 class="label-mono">03 · <%= ka ? 'წარმომავლობა და ფასი' : 'Origin and price' %></h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label class="field"><span class="field-label"><%= t('fields.source') %> *</span>
             <select class="input" name="source" data-other="source-other-wrap"><% C.SOURCES.forEach(s => { %><option value="<%= s %>" <%= cell.source === s ? 'selected' : '' %>><%= t('source.' + s) %></option><% }) %></select>
@@ -56,7 +56,7 @@
 
     <section class="card card-pad">
       <h2 class="label-mono">04 · <%= ka ? 'დიაგნოსტიკა' : 'Diagnostics' %></h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <label class="field"><span class="field-label"><%= t('fields.soh') %>, %</span><input class="input" name="soh" inputmode="decimal" value="<%= v('soh') %>" placeholder="85"></label>
         <label class="field"><span class="field-label"><%= t('fields.voltage') %>, V</span><input class="input" name="voltage" inputmode="decimal" value="<%= v('voltage') %>" placeholder="3.6"></label>
         <label class="field"><span class="field-label"><%= t('fields.ir') %>, mΩ</span><input class="input" name="internal_resistance" inputmode="decimal" value="<%= v('internal_resistance') %>" placeholder="40"></label>
@@ -64,7 +64,7 @@
       </div>
       <fieldset class="mt-5">
         <legend class="field-label"><%= t('fields.grade') %> <span class="font-normal text-ink-soft dark:text-forest-300">— <%= ka ? 'SoH-ით ავტომატურად შეირჩევა' : 'auto-suggested from SoH' %></span></legend>
-        <div class="grid gap-2 sm:grid-cols-4">
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-4">
           <% C.GRADES.forEach(g => { %>
             <label class="flex cursor-pointer flex-col rounded-xl border border-forest-100 p-3 transition has-[:checked]:border-lime-400 has-[:checked]:bg-lime-50 has-[:checked]:ring-4 has-[:checked]:ring-lime-400/20 dark:border-graphite-600 dark:has-[:checked]:bg-lime-400/10">
               <input type="radio" name="grade" value="<%= g %>" class="sr-only" <%= cell.grade === g ? 'checked' : '' %>>
@@ -78,7 +78,7 @@
 
     <section class="card card-pad">
       <h2 class="label-mono">05 · <%= ka ? 'ფოტო და შენიშვნა' : 'Photo and notes' %></h2>
-      <div class="mt-4 grid gap-4 lg:grid-cols-2">
+      <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div>
           <span class="field-label"><%= t('fields.photo') %> <span class="font-normal text-ink-soft">(<%= t('common.optional') %>)</span></span>
           <label class="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-forest-200 p-4 text-sm text-forest-700 transition hover:border-lime-400 hover:bg-lime-50 dark:border-graphite-500 dark:text-forest-200 dark:hover:bg-lime-400/5">

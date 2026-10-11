@@ -4,7 +4,7 @@
   <% items.forEach(i => { %>
     <li>
       <div class="mb-1 flex items-baseline justify-between gap-3 text-sm">
-        <span class="truncate text-forest-800 dark:text-forest-100"><%= i.label %></span>
+        <span class="min-w-0 flex-1 truncate text-forest-800 dark:text-forest-100"><%= i.label %></span>
         <span class="shrink-0 whitespace-nowrap font-mono text-xs text-forest-600 dark:text-lime-300/80"><%= fmt(i.value, i.digits || 0) %><%= locals.unit ? ' ' + unit : '' %></span>
       </div>
       <div class="h-2.5 overflow-hidden rounded-full bg-mint-200 dark:bg-graphite-700">

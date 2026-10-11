@@ -1,39 +1,39 @@
 <% const ka = lang === 'ka'; %>
 <%- include('_top', { pageTitle: ka ? 'დაშბორდი' : 'Dashboard', action: { href: '/admin/cells/new', label: ka ? 'ელემენტის დამატება' : 'Add cells' } }) %>
 
-<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+<section class="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
   <% [
     [ka ? 'მიღებული ელემენტები' : 'Cells received', stats.received, 0, 'inventory_2', ka ? stats.batches + ' პარტია' : stats.batches + ' batches', true],
     [ka ? 'გაცოცხლებული (A–C)' : 'Revived (A–C)', stats.revived, 0, 'battery_charging_full', stats.received ? fmt(stats.revived / stats.received * 100, 0) + '%' : '0%'],
     [ka ? 'გამოყენებული პროდუქტებში' : 'Used in products', stats.used, 0, 'precision_manufacturing', stats.revived ? fmt(stats.used / stats.revived * 100, 0) + '%' : '0%'],
     [ka ? 'გადამუშავებაზე (D)' : 'To recycling (D)', stats.recycled, 0, 'recycling', ka ? 'მგვ ჯაჭვი' : 'EPR chain'],
   ].forEach(([label, v, d, icon, sub, dark]) => { %>
-    <div class="<%= dark ? 'card-dark' : 'card' %> p-5">
+    <div class="<%= dark ? 'card-dark' : 'card' %> min-w-0 p-4 sm:p-5">
       <div class="flex items-center justify-between">
         <span class="<%= dark ? 'font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300' : 'label-mono' %>"><%= label %></span>
         <span class="material-symbols-outlined <%= dark ? 'text-lime-300' : 'text-forest-300 dark:text-forest-500' %>"><%= icon %></span>
       </div>
-      <div class="mt-3 font-mono text-3xl font-semibold <%= dark ? 'text-white' : 'text-forest-900 dark:text-white' %>" data-count="<%= v %>" data-digits="<%= d %>"><%= fmt(v, d) %></div>
+      <div class="mt-3 font-mono text-2xl font-semibold sm:text-3xl <%= dark ? 'text-white' : 'text-forest-900 dark:text-white' %>" data-count="<%= v %>" data-digits="<%= d %>"><%= fmt(v, d) %></div>
       <div class="mt-1 text-xs <%= dark ? 'text-forest-200/70' : 'text-ink-soft dark:text-forest-300' %>"><%= sub %></div>
     </div>
   <% }) %>
 </section>
 
-<section class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+<section class="mt-3 grid grid-cols-2 gap-3 sm:mt-4 sm:gap-4 xl:grid-cols-4">
   <% [
     ['kWh ' + (ka ? 'მეორე სიცოცხლეში' : 'in second life'), stats.revivedKwh, 1, 'bolt'],
     [ka ? 'კგ გადარჩა ნაგავსაყრელს' : 'kg kept from landfill', stats.kgSaved, 0, 'delete_forever'],
     [ka ? 'ტ CO₂ თავიდან აცილებული' : 't CO₂ avoided', stats.co2Tonnes, 2, 'co2'],
     [ka ? 'მარაგის ღირებულება (₾)' : 'Inventory value (₾)', stats.inventoryValue, 0, 'payments'],
   ].forEach(([label, v, d, icon]) => { %>
-    <div class="card p-5">
-      <div class="flex items-center justify-between"><span class="label-mono"><%= label %></span><span class="material-symbols-outlined text-forest-300 dark:text-forest-500"><%= icon %></span></div>
-      <div class="mt-3 font-mono text-2xl font-semibold text-forest-900 dark:text-white" data-count="<%= v %>" data-digits="<%= d %>"><%= fmt(v, d) %></div>
+    <div class="card min-w-0 p-4 sm:p-5">
+      <div class="flex items-center justify-between gap-2"><span class="label-mono"><%= label %></span><span class="material-symbols-outlined text-forest-300 dark:text-forest-500"><%= icon %></span></div>
+      <div class="mt-3 font-mono text-xl font-semibold text-forest-900 sm:text-2xl dark:text-white" data-count="<%= v %>" data-digits="<%= d %>"><%= fmt(v, d) %></div>
     </div>
   <% }) %>
 </section>
 
-<section class="mt-6 grid gap-4 xl:grid-cols-3">
+<section class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-3">
   <div class="card card-pad">
     <h2 class="font-semibold text-forest-900 dark:text-white"><%= t('stats.bySource') %></h2>
     <div class="mt-5"><%- include('../partials/bars', { items: C.SOURCES.filter(s => stats.bySource[s]).map(s => ({ label: t('source.' + s), value: stats.bySource[s] })).sort((a,b) => b.value - a.value).map((x, i) => ({ ...x, cls: i === 0 ? 'bg-lime-400' : 'bg-forest-600/80 dark:bg-forest-500' })), unit: t('common.pcs') }) %></div>
@@ -48,7 +48,7 @@
   </div>
 </section>
 
-<section class="mt-4 grid gap-4 xl:grid-cols-[1fr_2fr]">
+<section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-[1fr_2fr]">
   <div class="card card-pad">
     <h2 class="font-semibold text-forest-900 dark:text-white"><%= t('stats.byChemistry') %></h2>
     <div class="mt-5"><%- include('../partials/bars', { items: Object.entries(stats.byChemistry).sort((a,b) => b[1]-a[1]).map(([k, v]) => ({ label: k === 'other' ? t('chem.other') : k, value: v, cls: 'bg-forest-600/80 dark:bg-forest-500' })), unit: t('common.pcs') }) %></div>

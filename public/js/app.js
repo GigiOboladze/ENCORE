@@ -97,6 +97,83 @@
     sync();
   });
 
+  // ---------- static (GitHub Pages) copy of the site ----------
+  const STATIC = window.ENCORE_STATIC;
+  if (STATIC) {
+    const params = new URLSearchParams(location.search);
+    // order page: preselect the product from ?product=slug
+    const wanted = params.get("product");
+    if (wanted) {
+      const radio = document.querySelector(`input[name=product_id][data-slug="${CSS.escape(wanted)}"]`);
+      if (radio) radio.checked = true;
+    }
+    // contact page: open the "write to us" tab from ?tab=contact
+    if (params.get("tab") === "contact") document.querySelector("[data-tab=contact]")?.click();
+
+    const notice = (form, ok, text) => {
+      form.querySelector("[data-static-notice]")?.remove();
+      const box = document.createElement("div");
+      box.dataset.staticNotice = "";
+      box.setAttribute("role", ok ? "status" : "alert");
+      box.className = `sm:col-span-2 flex items-start gap-3 rounded-xl p-4 text-sm ${ok ? "bg-lime-100 text-forest-900 dark:bg-lime-400/15 dark:text-lime-200" : "bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-200"}`;
+      box.textContent = text;
+      form.prepend(box);
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+
+    // without a server, a filled-in e-mail opens instead
+    const mailto = (kind, data, form) => {
+      const ka = STATIC.lang === "ka";
+      const labels = ka
+        ? { name: "სახელი", phone: "ტელეფონი", email: "ელ-ფოსტა", city: "ქალაქი", battery_source: "რისი ბატარეაა", battery_qty: "რაოდენობა", message: "შეტყობინება", product: "პროდუქტი", quantity: "რაოდენობა", delivery: "მიღება", note: "შენიშვნა" }
+        : { name: "Name", phone: "Phone", email: "Email", city: "City", battery_source: "Battery from", battery_qty: "Quantity", message: "Message", product: "Product", quantity: "Quantity", delivery: "Receive", note: "Note" };
+      const lines = [];
+      if (kind === "order") {
+        const r = form.querySelector("input[name=product_id]:checked");
+        lines.push(`${labels.product}: ${r ? r.dataset.name : ""}`);
+      }
+      for (const k of ["quantity", "delivery", "name", "phone", "email", "city", "battery_source", "battery_qty", "message", "note"]) {
+        const v = data.get(k);
+        if (v) lines.push(`${labels[k]}: ${k === "battery_source" ? form.querySelector("select[name=battery_source] option:checked")?.textContent || v : v}`);
+      }
+      const subject = kind === "order" ? (ka ? "ENCORE — შეკვეთა" : "ENCORE — order") : data.get("type") === "contact" ? (ka ? "ENCORE — შეტყობინება" : "ENCORE — message") : (ka ? "ENCORE — ბატარეის ჩაბარება" : "ENCORE — battery hand-in");
+      location.href = `mailto:${STATIC.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join("\n"))}`;
+    };
+
+    document.querySelectorAll("form[data-form]").forEach((form) => {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!form.reportValidity()) return;
+        const kind = form.dataset.form;
+        const data = new FormData(form);
+        if (data.get("website")) return;
+        if (kind === "order") {
+          const r = form.querySelector("input[name=product_id]:checked");
+          if (r) data.set("product_slug", r.dataset.slug);
+        }
+        const button = form.querySelector("button:not([type=button])");
+        if (STATIC.api) {
+          button.disabled = true;
+          try {
+            const res = await fetch(`${STATIC.api.replace(/\/$/, "")}/api/${kind}`, { method: "POST", body: new URLSearchParams(data) });
+            if (!res.ok) throw new Error(String(res.status));
+            notice(form, true, form.dataset.sent);
+            form.reset();
+          } catch (err) {
+            notice(form, false, form.dataset.error);
+          } finally {
+            button.disabled = false;
+          }
+        } else {
+          mailto(kind, data, form);
+          notice(form, true, STATIC.lang === "ka"
+            ? `გაიხსნა ელ-ფოსტა შევსებული შეტყობინებით — დააჭირე „გაგზავნას“. თუ არ გაიხსნა, მოგვწერე: ${STATIC.email}`
+            : `Your e-mail app opened with the message filled in — just press Send. If it didn't open, write to ${STATIC.email}`);
+        }
+      });
+    });
+  }
+
   // image file inputs → preview
   document.querySelectorAll("input[type=file][data-preview]").forEach((input) => {
     const box = document.getElementById(input.dataset.preview);

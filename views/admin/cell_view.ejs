@@ -8,7 +8,7 @@
   </div>
 </div>
 
-<div class="grid gap-5 xl:grid-cols-[1fr_340px]">
+<div class="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_340px]">
   <div class="card overflow-hidden">
     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-forest-100 bg-mint-50 px-6 py-4 dark:border-graphite-600 dark:bg-graphite-850">
       <div>
@@ -17,7 +17,7 @@
       </div>
       <span class="grade-<%= cell.grade %> !px-3 !py-1 text-sm"><%= cell.grade %> · <%= t('grade.' + cell.grade).split('—')[1] %></span>
     </div>
-    <dl class="grid gap-px bg-forest-50 sm:grid-cols-2 lg:grid-cols-3 dark:bg-graphite-700">
+    <dl class="grid grid-cols-1 gap-px bg-forest-50 sm:grid-cols-2 lg:grid-cols-3 dark:bg-graphite-700">
       <% [
         ['fields.chemistry', cell.chemistry === 'other' ? t('chem.other') : cell.chemistry],
         ['fields.form', cell.form_factor === 'other' ? (cell.form_other || t('form.other')) : t('form.' + cell.form_factor)],

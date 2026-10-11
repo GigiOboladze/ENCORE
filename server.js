@@ -47,11 +47,25 @@ app.use(cookieSession({
   secure: process.env.NODE_ENV === "production",
 }));
 
-// Reject cross-site form posts (CSRF): the browser's Origin must match our host.
+// Sites allowed to call /api (the static GitHub Pages copy of the website).
+const CORS_ORIGINS = (process.env.CORS_ORIGINS || "https://gigioboladze.github.io").split(",").map((o) => o.trim()).filter(Boolean);
+
+app.use("/api", (req, res, next) => {
+  const origin = req.get("origin");
+  if (origin && CORS_ORIGINS.includes(origin)) {
+    res.set({ "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Methods": "POST", "Access-Control-Allow-Headers": "Content-Type", Vary: "Origin" });
+  }
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
+// Reject cross-site form posts (CSRF): the browser's Origin must match our host
+// (the public /api endpoints also accept the allowed static-site origins).
 app.use((req, res, next) => {
   if (req.method !== "POST") return next();
   const origin = req.get("origin");
   if (origin) {
+    if (req.path.startsWith("/api/") && CORS_ORIGINS.includes(origin)) return next();
     try {
       if (new URL(origin).host !== req.get("host")) return res.status(403).send("Forbidden");
     } catch { return res.status(403).send("Forbidden"); }
@@ -68,7 +82,13 @@ app.use((req, res, next) => {
   res.locals.L = (obj, field) => (obj ? obj[`${field}_${req.lang}`] || obj[`${field}_ka`] || "" : "");
   res.locals.theme = (req.headers.cookie || "").match(/(?:^|;\s*)theme=(dark|light)/)?.[1] || "";
   res.locals.path = req.path;
+  // set by scripts/build-static.js when rendering the GitHub Pages copy
+  res.locals.isStatic = req.get("x-static-export") === "1";
+  res.locals.staticApi = process.env.STATIC_API_URL || "";
   res.locals.site = settings();
+  // phone link only for a real number (the placeholder "+995 5XX…" stays plain text)
+  const digits = res.locals.site.phone.replace(/[^+0-9]/g, "");
+  res.locals.telHref = digits.replace("+", "").length >= 9 ? `tel:${digits}` : "";
   const fmt = (n, digits = 0) => {
     const out = Number(n || 0).toLocaleString("en-US", { maximumFractionDigits: digits, minimumFractionDigits: 0 });
     return req.lang === "ka" ? out.replace(/,/g, " ").replace(".", ",") : out;

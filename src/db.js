@@ -112,6 +112,12 @@ const SETTING_DEFAULTS = {
   hero_sub_en: "We collect used lithium batteries, test them with AI and rebuild them into solar storage stations, portable power stations and power tool batteries.",
 };
 
+// Contact details for the site can be edited in site.config.json (used by the GitHub Pages build too).
+try {
+  const fileConfig = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "site.config.json"), "utf8"));
+  for (const [k, v] of Object.entries(fileConfig)) if (k in SETTING_DEFAULTS) SETTING_DEFAULTS[k] = String(v ?? "");
+} catch {}
+
 const getSetting = db.prepare("SELECT value FROM settings WHERE key = ?");
 const putSetting = db.prepare("INSERT INTO settings(key, value) VALUES(?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value");
 

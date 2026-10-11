@@ -2,7 +2,7 @@
 <body class="page-bg">
 <%- include('partials/header') %>
 <main id="main" class="container-x pt-12">
-  <section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+  <section class="grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
     <div>
       <span class="eyebrow"><span class="dot-live"></span>ENCORE</span>
       <h1 class="mt-4 text-3xl font-bold text-forest-900 sm:text-5xl dark:text-white"><%= t('about.title') %></h1>
@@ -18,7 +18,7 @@
     </div>
   </section>
 
-  <section class="mt-16 grid gap-6 lg:grid-cols-2">
+  <section class="mt-16 grid grid-cols-1 gap-6 lg:grid-cols-2">
     <div class="card card-pad">
       <span class="grid h-11 w-11 place-items-center rounded-xl bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300"><span class="material-symbols-outlined">flag</span></span>
       <h2 class="mt-4 text-2xl font-bold text-forest-900 dark:text-white"><%= t('about.missionTitle') %></h2>
@@ -38,7 +38,7 @@
   <section class="mt-16" aria-labelledby="env-title">
     <span class="label-mono"><%= lang === 'ka' ? 'პრობლემა' : 'The problem' %></span>
     <h2 id="env-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('env.subtitle') %></h2>
-    <div class="mt-6 grid gap-4 md:grid-cols-3">
+    <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
       <% [['tox','skull'],['fire','local_fire_department'],['co2','factory']].forEach(([k, icon]) => { %>
         <div class="card card-pad border-l-4 !border-l-red-400">
           <span class="material-symbols-outlined text-2xl text-red-500"><%= icon %></span>
@@ -52,7 +52,7 @@
   <section class="mt-16" aria-labelledby="tech-title">
     <span class="label-mono"><%= lang === 'ka' ? 'გადაწყვეტა' : 'The solution' %></span>
     <h2 id="tech-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('about.techTitle') %></h2>
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <% [['tech1','neurology'],['tech2','grading'],['tech3','precision_manufacturing']].forEach(([k, icon], i) => { %>
         <div class="card card-pad">
           <div class="flex items-center justify-between">
@@ -68,7 +68,7 @@
 
   <section class="mt-16">
     <h2 class="text-2xl font-bold text-forest-900 dark:text-white"><%= t('about.gradesTitle') %></h2>
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <% ['A','B','C','D'].forEach(g => { %>
         <div class="card card-pad">
           <span class="grade-<%= g %> !px-3 !py-1 text-sm"><%= g %></span>

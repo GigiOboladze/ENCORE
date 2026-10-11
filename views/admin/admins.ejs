@@ -1,6 +1,6 @@
 <% const ka = lang === 'ka'; %>
 <%- include('_top', { pageTitle: ka ? 'ადმინები' : 'Admins' }) %>
-<div class="grid gap-5 xl:grid-cols-[1fr_360px]">
+<div class="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
   <div class="table-wrap self-start">
     <table class="tbl">
       <thead><tr><th><%= ka ? 'მომხმარებელი' : 'Username' %></th><th><%= ka ? 'როლი' : 'Role' %></th><th><%= ka ? 'შექმნილია' : 'Created' %></th><th><%= ka ? 'პაროლის შეცვლა' : 'Reset password' %></th><th></th></tr></thead>

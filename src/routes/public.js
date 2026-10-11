@@ -1,4 +1,5 @@
 // Public site: home, products, about, contact / hand-in, order.
+// Also a small JSON API so the static GitHub Pages copy of the site can submit its forms here.
 const express = require("express");
 const { db } = require("../db");
 const { computeStats, SOURCES } = require("../cells");
@@ -8,6 +9,38 @@ const router = express.Router();
 const clean = (v, max = 500) => String(v ?? "").trim().slice(0, max);
 const products = () => db.prepare("SELECT * FROM products WHERE active = 1 ORDER BY sort_order, id").all()
   .map((p) => ({ ...p, photos: JSON.parse(p.photos || "[]") }));
+
+// returns { ok, type, form }
+function saveInquiry(body) {
+  const type = body.type === "contact" ? "contact" : "handin";
+  const form = {
+    name: clean(body.name, 120), phone: clean(body.phone, 40), email: clean(body.email, 120),
+    city: clean(body.city, 80), battery_source: SOURCES.includes(body.battery_source) ? body.battery_source : "",
+    battery_qty: clean(body.battery_qty, 200), message: clean(body.message, 3000),
+  };
+  if (body.website) return { ok: true, type, form }; // honeypot: pretend success for bots
+  const valid = form.name && (form.phone || form.email) && (type === "handin" || form.message);
+  if (!valid) return { ok: false, type, form };
+  db.prepare("INSERT INTO inquiries(type, name, phone, email, city, battery_source, battery_qty, message) VALUES(?,?,?,?,?,?,?,?)")
+    .run(type, form.name, form.phone, form.email, form.city, form.battery_source, form.battery_qty, form.message);
+  return { ok: true, type, form };
+}
+
+// returns { ok, product, form }; the product can be given by id or slug
+function saveOrder(body) {
+  const list = products();
+  const product = list.find((p) => String(p.id) === String(body.product_id)) || list.find((p) => p.slug === body.product_slug);
+  const form = {
+    product_id: body.product_id, quantity: Math.min(Math.max(parseInt(body.quantity, 10) || 1, 1), 999),
+    name: clean(body.name, 120), phone: clean(body.phone, 40), email: clean(body.email, 120),
+    city: clean(body.city, 80), delivery: body.delivery === "delivery" ? "delivery" : "pickup", note: clean(body.note, 3000),
+  };
+  if (body.website) return { ok: true, product, form, list };
+  if (!product || !form.name || !form.phone) return { ok: false, product, form, list };
+  db.prepare("INSERT INTO orders(product_id, product_name, quantity, name, phone, email, city, delivery, note) VALUES(?,?,?,?,?,?,?,?,?)")
+    .run(product.id, product.name_ka, form.quantity, form.name, form.phone, form.email, form.city, form.delivery, form.note);
+  return { ok: true, product, form, list };
+}
 
 router.get("/", (req, res) => {
   res.render("home", { stats: computeStats(), products: products() });
@@ -28,18 +61,9 @@ router.get("/contact", (req, res) => {
 });
 
 router.post("/contact", (req, res) => {
-  const type = req.body.type === "contact" ? "contact" : "handin";
-  const form = {
-    name: clean(req.body.name, 120), phone: clean(req.body.phone, 40), email: clean(req.body.email, 120),
-    city: clean(req.body.city, 80), battery_source: clean(req.body.battery_source, 40), battery_qty: clean(req.body.battery_qty, 200),
-    message: clean(req.body.message, 3000),
-  };
-  if (req.body.website) return res.redirect(`/contact?sent=1&tab=${type}`); // honeypot
-  const valid = form.name && (form.phone || form.email) && (type === "handin" || form.message);
-  if (!valid) return res.status(400).render("contact", { tab: type, sent: false, error: res.locals.t("errors.form"), form, sources: SOURCES });
-  db.prepare("INSERT INTO inquiries(type, name, phone, email, city, battery_source, battery_qty, message) VALUES(?,?,?,?,?,?,?,?)")
-    .run(type, form.name, form.phone, form.email, form.city, form.battery_source, form.battery_qty, form.message);
-  res.redirect(`/contact?sent=1&tab=${type}`);
+  const r = saveInquiry(req.body);
+  if (!r.ok) return res.status(400).render("contact", { tab: r.type, sent: false, error: res.locals.t("errors.form"), form: r.form, sources: SOURCES });
+  res.redirect(`/contact?sent=1&tab=${r.type}`);
 });
 
 router.get("/order", (req, res) => {
@@ -47,21 +71,20 @@ router.get("/order", (req, res) => {
 });
 
 router.post("/order", (req, res) => {
-  const list = products();
-  const product = list.find((p) => String(p.id) === String(req.body.product_id));
-  const form = {
-    product_id: req.body.product_id, quantity: Math.min(Math.max(parseInt(req.body.quantity, 10) || 1, 1), 999),
-    name: clean(req.body.name, 120), phone: clean(req.body.phone, 40), email: clean(req.body.email, 120),
-    city: clean(req.body.city, 80), delivery: req.body.delivery === "delivery" ? "delivery" : "pickup", note: clean(req.body.note, 3000),
-  };
-  if (req.body.website) return res.redirect("/order?sent=1");
-  if (!product || !form.name || !form.phone) {
-    return res.status(400).render("order", { products: list, selected: product?.slug || "", sent: false, error: res.locals.t("errors.form"), form });
-  }
-  db.prepare("INSERT INTO orders(product_id, product_name, quantity, name, phone, email, city, delivery, note) VALUES(?,?,?,?,?,?,?,?,?)")
-    .run(product.id, product.name_ka, form.quantity, form.name, form.phone, form.email, form.city, form.delivery, form.note);
+  const r = saveOrder(req.body);
+  if (!r.ok) return res.status(400).render("order", { products: r.list, selected: r.product?.slug || "", sent: false, error: res.locals.t("errors.form"), form: r.form });
   res.redirect("/order?sent=1");
 });
 
+// ---------- JSON API for the static (GitHub Pages) site ----------
+router.post("/api/contact", (req, res) => {
+  const r = saveInquiry(req.body);
+  res.status(r.ok ? 200 : 400).json({ ok: r.ok });
+});
+
+router.post("/api/order", (req, res) => {
+  const r = saveOrder(req.body);
+  res.status(r.ok ? 200 : 400).json({ ok: r.ok });
+});
 
 module.exports = router;
