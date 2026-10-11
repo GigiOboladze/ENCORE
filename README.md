@@ -69,4 +69,6 @@ Railway თავად გაუშვებს `npm install`, `npm run build` 
   პირდაპირ ადმინ პანელში ჩავარდება.
 - სტატისტიკა და პროდუქტები GitHub Pages-ზე აიწყობა საწყისი (სადემონსტრაციო) მონაცემებით.
 
+QR კოდი (დასაბეჭდად): [qr-code.png](qr-code.png) — ხსნის https://gigioboladze.github.io/ENCORE/
+
 ლოკალურად შემოწმება: `BASE_PATH=/ENCORE/ npm run build:static` → ფაილები `dist/` საქაღალდეში.
