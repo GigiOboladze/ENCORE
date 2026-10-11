@@ -23,7 +23,6 @@ const dict = {
     how: {
       title: "როგორ მუშაობს", subtitle: "ბატარეა სრულ წრეს გადის — ნაგავსაყრელამდე არასოდეს",
       s1: "შეგროვება", s1d: "სერვისები, ფლოტები, მგვ ორგანიზაციები და შენ",
-      s2: "AI დიაგნოსტიკა", s2d: "SoH, შიდა წინაღობა, ტემპერატურა — წუთებში",
       s3: "დახარისხება A–D", s3d: "თითოეული უჯრედი თავის როლს იღებს",
       s4: "მეორე სიცოცხლე", s4d: "მზის სადგური, პორტატული სადგური, ხელსაწყოს ბატარეა",
       s5: "ლეგალური გადამუშავება", s5d: "D კლასი — მგვ ჯაჭვში, არა ნაგავსაყრელზე",
@@ -47,7 +46,6 @@ const dict = {
       tech1t: "სწრაფი AI დიაგნოსტიკა", tech1: "პულსური ტესტით ვზომავთ ძაბვის რეაქციას, შიდა წინაღობას და ტემპერატურას; ML მოდელი SoH-ს წუთებში აფასებს და არა საათებში.",
       tech2t: "დახარისხება A–D", tech2: "A — ხელსაწყოების და სკუტერების ბატარეები; A/B — მზის ენერგიის სადგურები; C — მცირე მოწყობილობები; D — ლეგალური გადამუშავება.",
       tech3t: "დაჯგუფება და აწყობა", tech3: "ერთ პროდუქტში მხოლოდ ერთი ქიმიის, მსგავსი ტევადობისა და წინაღობის უჯრედები ერთიანდება — ხარისხიანი BMS-ით და spot welding-ით.",
-      tech4t: "ელემენტის პასპორტი", tech4: "ყოველ პარტიას აქვს QR კოდი: წარმომავლობა, მდგომარეობა, კლასი და მისი შემდგომი გზა.",
       gradesTitle: "დახარისხების სისტემა",
     },
     contact: {
@@ -62,7 +60,6 @@ const dict = {
       product: "პროდუქტი", quantity: "რაოდენობა", delivery: "მიღების ფორმა", pickup: "თავად წავიღებ", deliver: "მიწოდება", note: "დამატებითი ინფორმაცია",
       sent: "შეკვეთა მიღებულია! მალე დაგიკავშირდებით დეტალების დასაზუსტებლად.", choose: "აირჩიე პროდუქტი",
     },
-    passport: { title: "ელემენტის პასპორტი", notFound: "პასპორტი ვერ მოიძებნა", lookup: "პასპორტის შემოწმება", lookupPh: "მაგ. ENC-2026-00001", check: "შემოწმება", status: "სტატუსი", revived: "მეორე სიცოცხლეში", recycled: "ლეგალურ გადამუშავებაზე", batch: "პარტია", impact: "ამ პარტიის გავლენა" },
     footer: { tagline: "მეორე სიცოცხლე — სუფთა ხვალინდელი დღისთვის.", links: "ბმულები", follow: "გამოგვყევი", rights: "ყველა უფლება დაცულია.", hackathon: "GITA Circular Economy Hackathon • სენაკი 2026" },
     fields: {
       chemistry: "ქიმია", form: "ფორმა", capacity: "ტევადობა", source: "რისი ელემენტი იყო", quantity: "რაოდენობა", unitPrice: "ერთეულის ფასი",
@@ -96,7 +93,6 @@ const dict = {
     how: {
       title: "How it works", subtitle: "Every battery goes full circle — never to landfill",
       s1: "Collect", s1d: "Service centres, fleets, EPR organisations and you",
-      s2: "AI diagnostics", s2d: "SoH, internal resistance, temperature — in minutes",
       s3: "Grade A–D", s3d: "Every cell gets the right job",
       s4: "Second life", s4d: "Solar storage, portable stations, power tool batteries",
       s5: "Legal recycling", s5d: "Grade D goes to the EPR chain, never to landfill",
@@ -120,7 +116,6 @@ const dict = {
       tech1t: "Fast AI diagnostics", tech1: "A pulse test measures voltage response, internal resistance and temperature; an ML model estimates SoH in minutes, not hours.",
       tech2t: "Grading A–D", tech2: "A — power tool and scooter batteries; A/B — solar storage stations; C — small devices; D — legal recycling.",
       tech3t: "Matching and assembly", tech3: "Each product combines cells of one chemistry with similar capacity and resistance — with a quality BMS and spot welding.",
-      tech4t: "Cell passport", tech4: "Every batch has a QR code: origin, condition, grade and where it goes next.",
       gradesTitle: "Grading system",
     },
     contact: {
@@ -135,7 +130,6 @@ const dict = {
       product: "Product", quantity: "Quantity", delivery: "How to receive", pickup: "I'll pick it up", deliver: "Delivery", note: "Additional information",
       sent: "Order received! We'll contact you shortly to confirm the details.", choose: "Choose a product",
     },
-    passport: { title: "Cell passport", notFound: "Passport not found", lookup: "Check a passport", lookupPh: "e.g. ENC-2026-00001", check: "Check", status: "Status", revived: "In its second life", recycled: "Sent to legal recycling", batch: "Batch", impact: "Impact of this batch" },
     footer: { tagline: "Second life for a cleaner tomorrow.", links: "Links", follow: "Follow us", rights: "All rights reserved.", hackathon: "GITA Circular Economy Hackathon • Senaki 2026" },
     fields: {
       chemistry: "Chemistry", form: "Form factor", capacity: "Capacity", source: "Came from", quantity: "Quantity", unitPrice: "Unit price",

@@ -1,6 +1,5 @@
 // Admin panel: login, dashboard statistics, cell batches, products, orders, hand-in requests, admins, settings.
 const express = require("express");
-const QRCode = require("qrcode");
 const multer = require("multer");
 const { db, settings, saveSettings } = require("../db");
 const auth = require("../auth");
@@ -111,12 +110,10 @@ router.post("/cells", upload.single("photo"), (req, res) => {
   res.redirect(`/admin/cells/${r.lastInsertRowid}`);
 });
 
-router.get("/cells/:id", async (req, res, next) => {
+router.get("/cells/:id", (req, res, next) => {
   const cell = db.prepare("SELECT * FROM cells WHERE id = ?").get(req.params.id);
   if (!cell) return next();
-  const url = `${req.protocol}://${req.get("host")}/passport/${cell.code}`;
-  const qr = await QRCode.toString(url, { type: "svg", margin: 1, color: { dark: "#0F2A21", light: "#FFFFFF" } });
-  res.render("admin/cell_view", { cell, qr, url });
+  res.render("admin/cell_view", { cell });
 });
 
 router.get("/cells/:id/edit", (req, res, next) => {

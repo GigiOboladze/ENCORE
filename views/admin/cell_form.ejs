@@ -110,8 +110,8 @@
         <div class="flex justify-between gap-3 border-t border-white/10 pt-3"><dt class="text-forest-200/70"><%= ka ? 'ჯამური ღირებულება' : 'Total value' %></dt><dd class="font-mono text-lg font-semibold"><span data-sum="value">0</span> ₾</dd></div>
       </dl>
       <div class="mt-5 flex items-center gap-3 rounded-xl bg-white/5 p-3 ring-1 ring-white/10">
-        <span class="material-symbols-outlined text-3xl text-lime-300">qr_code_2</span>
-        <div class="text-xs text-forest-200/80"><div class="font-mono text-sm text-white"><%= editing ? cell.code : 'ENC-' + String(cell.received_at || '').slice(0, 4) + '-#####' %></div><%= ka ? 'QR პასპორტი შენახვისას შეიქმნება' : 'QR passport is created on save' %></div>
+        <span class="material-symbols-outlined text-3xl text-lime-300">tag</span>
+        <div class="text-xs text-forest-200/80"><div class="font-mono text-sm text-white"><%= editing ? cell.code : 'ENC-' + String(cell.received_at || '').slice(0, 4) + '-#####' %></div><%= ka ? 'პარტიის კოდი შენახვისას მიენიჭება' : 'Batch code is assigned on save' %></div>
       </div>
       <button class="btn-lime mt-5 w-full py-3"><span class="material-symbols-outlined text-base">save</span><%= editing ? t('common.save') : (ka ? 'პარტიის დამატება' : 'Add batch') %></button>
     </div>

@@ -52,8 +52,8 @@
   <section class="mt-16" aria-labelledby="tech-title">
     <span class="label-mono"><%= lang === 'ka' ? 'გადაწყვეტა' : 'The solution' %></span>
     <h2 id="tech-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('about.techTitle') %></h2>
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <% [['tech1','neurology'],['tech2','grading'],['tech3','precision_manufacturing'],['tech4','qr_code_2']].forEach(([k, icon], i) => { %>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <% [['tech1','neurology'],['tech2','grading'],['tech3','precision_manufacturing']].forEach(([k, icon], i) => { %>
         <div class="card card-pad">
           <div class="flex items-center justify-between">
             <span class="grid h-11 w-11 place-items-center rounded-xl bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300"><span class="material-symbols-outlined"><%= icon %></span></span>

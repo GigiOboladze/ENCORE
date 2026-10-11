@@ -3,11 +3,6 @@
     <div class="space-y-4">
       <%- include('logo', { light: true }) %>
       <p class="max-w-xs text-sm text-forest-200/80"><%= t('footer.tagline') %></p>
-      <form action="/passport" method="get" class="flex max-w-xs gap-2" role="search">
-        <label for="f-passport" class="sr-only"><%= t('passport.lookup') %></label>
-        <input id="f-passport" name="code" placeholder="<%= t('passport.lookupPh') %>" class="w-full rounded-full border border-white/15 bg-white/5 px-4 py-2 font-mono text-xs text-white placeholder:text-forest-300 focus:border-lime-400 focus:outline-none">
-        <button class="rounded-full bg-lime-400 px-3 text-forest-900" aria-label="<%= t('passport.check') %>"><span class="material-symbols-outlined">qr_code_scanner</span></button>
-      </form>
     </div>
 
     <div>
@@ -61,6 +56,6 @@
     </div>
   </div>
 </div>
-<script src="/static/js/app.js" defer></script>
+<script src="/static/js/app.js?v=<%= locals.assetVersion || 1 %>" defer></script>
 </body>
 </html>

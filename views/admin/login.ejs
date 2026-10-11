@@ -25,6 +25,6 @@
     <p class="mt-6 text-center text-xs text-ink-soft dark:text-forest-300"><a href="/" class="hover:underline">← <%= lang === 'ka' ? 'საიტზე დაბრუნება' : 'Back to site' %></a></p>
   </div>
 </main>
-<script src="/static/js/app.js" defer></script>
+<script src="/static/js/app.js?v=<%= locals.assetVersion || 1 %>" defer></script>
 </body>
 </html>

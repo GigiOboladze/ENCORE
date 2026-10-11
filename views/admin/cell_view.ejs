@@ -4,7 +4,6 @@
 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
   <a href="/admin/cells" class="inline-flex items-center gap-1 text-sm font-medium text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-lime-300"><span class="material-symbols-outlined text-base">arrow_back</span><%= ka ? 'ყველა ელემენტი' : 'All cells' %></a>
   <div class="flex gap-2">
-    <a href="/passport/<%= cell.code %>" target="_blank" class="btn-ghost btn-sm"><span class="material-symbols-outlined text-base">open_in_new</span><%= ka ? 'საჯარო პასპორტი' : 'Public passport' %></a>
     <a href="/admin/cells/<%= cell.id %>/edit" class="btn-forest btn-sm"><span class="material-symbols-outlined text-base">edit</span><%= t('common.edit') %></a>
   </div>
 </div>
@@ -45,12 +44,6 @@
   </div>
 
   <aside class="space-y-4">
-    <div class="card card-pad text-center">
-      <div class="label-mono"><%= ka ? 'QR პასპორტი' : 'QR passport' %></div>
-      <div id="qr-box" class="mx-auto mt-3 w-48 rounded-xl bg-white p-2 ring-1 ring-forest-100"><%- qr %></div>
-      <div class="mt-2 break-all font-mono text-[11px] text-ink-soft dark:text-forest-300"><%= url %></div>
-      <button type="button" onclick="window.print()" class="btn-ghost btn-sm mt-4"><span class="material-symbols-outlined text-base">print</span><%= ka ? 'ეტიკეტის ბეჭდვა' : 'Print label' %></button>
-    </div>
     <div class="card-dark p-6">
       <div class="font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300"><%= ka ? 'პარტიის გავლენა' : 'Batch impact' %></div>
       <div class="mt-4 grid grid-cols-2 gap-4">
@@ -60,5 +53,4 @@
     </div>
   </aside>
 </div>
-<style>@media print { body * { visibility: hidden; } #qr-box, #qr-box * { visibility: visible; } #qr-box { position: fixed; left: 0; top: 0; width: 60mm; } }</style>
 <%- include('_bottom') %>

@@ -6,7 +6,7 @@
   <section class="container-x grid items-center gap-10 pb-12 pt-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pb-16">
     <div class="animate-rise">
       <span class="eyebrow"><span class="dot-live"></span><%= t('hero.badge') %></span>
-      <h1 class="mt-5 font-bold leading-[1.1] text-forest-900 dark:text-white <%= lang === 'ka' ? 'text-3xl sm:text-4xl xl:text-[2.9rem]' : 'text-4xl sm:text-5xl xl:text-[3.4rem]' %>"><%= L(site, 'hero_title') %></h1>
+      <h1 class="mt-5 font-bold text-forest-900 dark:text-white <%= lang === 'ka' ? 'text-3xl/[1.3] sm:text-4xl/[1.3] xl:text-[2.75rem]/[1.3]' : 'text-4xl/[1.1] sm:text-5xl/[1.1] xl:text-[3.4rem]/[1.1]' %>"><%= L(site, 'hero_title') %></h1>
       <p class="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg dark:text-forest-200"><%= L(site, 'hero_sub') %></p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href="/products" class="btn-lime px-6 py-3 text-base"><span class="material-symbols-outlined">bolt</span><%= t('hero.ctaProducts') %></a>
@@ -14,7 +14,6 @@
       </div>
       <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-forest-700 dark:text-forest-200">
         <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-lime-500">verified</span><%= lang === 'ka' ? 'ყოველი ელემენტი შემოწმებულია' : 'Every cell is tested' %></span>
-        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-lime-500">qr_code_2</span><%= lang === 'ka' ? 'QR პასპორტი ყველა პარტიაზე' : 'QR passport on every batch' %></span>
         <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-lime-500">recycling</span><%= lang === 'ka' ? '0 კგ ნაგავსაყრელზე' : '0 kg to landfill' %></span>
       </div>
     </div>
@@ -83,11 +82,11 @@
       <h2 id="how-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('how.title') %></h2>
       <p class="mt-2 text-ink-soft dark:text-forest-300"><%= t('how.subtitle') %></p>
     </div>
-    <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      <% [['s1','local_shipping'],['s2','neurology'],['s3','grading'],['s4','solar_power'],['s5','recycling']].forEach(([k, icon], i) => { %>
+    <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% [['s1','local_shipping'],['s3','grading'],['s4','solar_power'],['s5','recycling']].forEach(([k, icon], i) => { %>
         <li class="card card-pad relative overflow-hidden">
           <span class="absolute right-4 top-3 font-mono text-4xl font-bold text-mint-200 dark:text-graphite-700">0<%= i + 1 %></span>
-          <span class="grid h-11 w-11 place-items-center rounded-xl <%= i === 4 ? 'bg-forest-800 text-lime-300' : 'bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300' %>"><span class="material-symbols-outlined"><%= icon %></span></span>
+          <span class="grid h-11 w-11 place-items-center rounded-xl <%= i === 3 ? 'bg-forest-800 text-lime-300' : 'bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300' %>"><span class="material-symbols-outlined"><%= icon %></span></span>
           <h3 class="relative mt-4 font-semibold text-forest-900 dark:text-white"><%= t('how.' + k) %></h3>
           <p class="relative mt-1 text-sm text-ink-soft dark:text-forest-300"><%= t('how.' + k + 'd') %></p>
         </li>

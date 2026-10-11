@@ -1,8 +1,7 @@
-// Public site: home, products, about, contact / hand-in, order, cell passport.
+// Public site: home, products, about, contact / hand-in, order.
 const express = require("express");
-const QRCode = require("qrcode");
 const { db } = require("../db");
-const { computeStats, unitWh, unitWeight, effectiveSoh, SOURCES } = require("../cells");
+const { computeStats, SOURCES } = require("../cells");
 
 const router = express.Router();
 
@@ -64,21 +63,5 @@ router.post("/order", (req, res) => {
   res.redirect("/order?sent=1");
 });
 
-router.get("/passport", (req, res) => {
-  const code = clean(req.query.code, 40).toUpperCase();
-  if (code) return res.redirect(`/passport/${encodeURIComponent(code)}`);
-  res.render("passport", { cell: null, code: "", qr: null, impact: null });
-});
-
-router.get("/passport/:code", async (req, res) => {
-  const code = clean(req.params.code, 40).toUpperCase();
-  const cell = db.prepare("SELECT * FROM cells WHERE code = ?").get(code);
-  if (!cell) return res.status(404).render("passport", { cell: null, code, qr: null, impact: null });
-  const url = `${req.protocol}://${req.get("host")}/passport/${cell.code}`;
-  const qr = await QRCode.toString(url, { type: "svg", margin: 1, color: { dark: "#0F2A21", light: "#0000" } });
-  const kwh = cell.grade === "D" ? 0 : (cell.quantity * unitWh(cell) * effectiveSoh(cell)) / 100 / 1000;
-  const impact = { kg: (cell.quantity * unitWeight(cell)) / 1000, kwh, co2: kwh * 0.1 };
-  res.render("passport", { cell, code, qr, impact });
-});
 
 module.exports = router;

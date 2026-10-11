@@ -16,6 +16,7 @@ module.exports = {
       fontFamily: {
         display: ['"Space Grotesk"', '"Noto Sans Georgian"', "system-ui", "sans-serif"],
         sans: ["Inter", '"Noto Sans Georgian"', "system-ui", "sans-serif"],
+        logo: ["Montserrat", "system-ui", "sans-serif"],
         mono: ['"JetBrains Mono"', '"Noto Sans Georgian"', "ui-monospace", "monospace"],
       },
       boxShadow: {

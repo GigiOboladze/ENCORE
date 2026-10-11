@@ -1,4 +1,5 @@
 // ENCORE website — Express + EJS + SQLite.
+const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const express = require("express");
@@ -13,6 +14,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
+// cache-busting version for /static assets: changes whenever the CSS or JS changes
+app.locals.assetVersion = crypto.createHash("md5")
+  .update(fs.readFileSync(path.join(__dirname, "public/css/app.css")))
+  .update(fs.readFileSync(path.join(__dirname, "public/js/app.js")))
+  .digest("hex").slice(0, 10);
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 app.disable("x-powered-by");
