@@ -1,0 +1,12 @@
+<%- include('partials/head', { title }) %>
+<body class="page-bg">
+<%- include('partials/header') %>
+<main id="main" class="container-x grid min-h-[50vh] place-items-center pt-16 text-center">
+  <div>
+    <span class="material-symbols-outlined text-6xl text-lime-500">battery_alert</span>
+    <h1 class="mt-4 text-3xl font-bold text-forest-900 dark:text-white"><%= title %></h1>
+    <% if (message) { %><p class="mt-2 text-ink-soft dark:text-forest-300"><%= message %></p><% } %>
+    <a href="/" class="btn-lime mt-6"><%= t('nav.home') %></a>
+  </div>
+</main>
+<%- include('partials/footer') %>

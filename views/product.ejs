@@ -1,0 +1,55 @@
+<%- include('partials/head', { title: L(p, 'name') }) %>
+<body class="page-bg">
+<%- include('partials/header') %>
+<main id="main" class="container-x pt-10">
+  <a href="/products" class="inline-flex items-center gap-1 text-sm font-medium text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-lime-300"><span class="material-symbols-outlined text-base">arrow_back</span><%= t('products.title') %></a>
+  <div class="mt-6 grid gap-10 lg:grid-cols-2">
+    <div>
+      <div class="overflow-hidden rounded-[1.75rem] border border-forest-100 bg-white shadow-card dark:border-graphite-600 dark:bg-graphite-800">
+        <% if (p.photos[0]) { %>
+          <img id="main-photo" src="/uploads/<%= p.photos[0] %>" alt="<%= L(p, 'name') %>" class="aspect-square w-full object-cover">
+        <% } else { %>
+          <div class="grid aspect-square place-items-center text-forest-300"><span class="material-symbols-outlined text-6xl">battery_charging_full</span></div>
+        <% } %>
+      </div>
+      <% if (p.photos.length > 1) { %>
+        <div class="mt-3 flex gap-3">
+          <% p.photos.forEach(ph => { %>
+            <button type="button" onclick="document.getElementById('main-photo').src='/uploads/<%= ph %>'" class="overflow-hidden rounded-xl ring-1 ring-forest-100 transition hover:ring-lime-400 dark:ring-graphite-600"><img src="/uploads/<%= ph %>" alt="" class="h-20 w-20 object-cover"></button>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+    <div>
+      <h1 class="text-3xl font-bold text-forest-900 sm:text-4xl dark:text-white"><%= L(p, 'name') %></h1>
+      <p class="mt-3 text-lg text-ink-soft dark:text-forest-200"><%= L(p, 'short') %></p>
+      <div class="mt-6 flex flex-wrap items-center gap-4">
+        <% if (p.price_from) { %>
+          <div class="font-display text-4xl font-bold text-forest-900 dark:text-white"><%= lang === 'ka' ? fmt(p.price_from) + ' ₾-დან' : 'from ' + fmt(p.price_from) + ' ₾' %></div>
+        <% } else { %>
+          <div class="text-xl font-semibold text-forest-800 dark:text-forest-100"><%= t('common.priceOnRequest') %></div>
+        <% } %>
+        <a href="/order?product=<%= p.slug %>" class="btn-lime px-6 py-3 text-base"><span class="material-symbols-outlined">shopping_bag</span><%= t('common.orderNow') %></a>
+      </div>
+      <p class="mt-4 inline-flex items-center gap-2 text-sm text-forest-700 dark:text-forest-300"><span class="material-symbols-outlined text-base text-lime-500">handyman</span><%= t('products.preorder') %></p>
+      <div class="prose-encore mt-8">
+        <% String(L(p, 'desc')).split(/\n{2,}/).forEach(par => { %><p><%= par %></p><% }) %>
+      </div>
+      <% const specs = String(L(p, 'specs') || '').split('\n').map(s => s.trim()).filter(Boolean); %>
+      <% if (specs.length) { %>
+        <div class="mt-6 card overflow-hidden">
+          <div class="border-b border-forest-100 px-5 py-3 dark:border-graphite-600"><span class="label-mono"><%= t('products.specs') %></span></div>
+          <dl class="divide-y divide-forest-50 dark:divide-graphite-700">
+            <% specs.forEach(s => { const i = s.indexOf(':'); %>
+              <div class="grid grid-cols-[1fr_1.4fr] gap-4 px-5 py-3 text-sm">
+                <dt class="text-ink-soft dark:text-forest-300"><%= i > 0 ? s.slice(0, i) : s %></dt>
+                <dd class="font-medium text-forest-900 dark:text-white"><%= i > 0 ? s.slice(i + 1).trim() : '' %></dd>
+              </div>
+            <% }) %>
+          </dl>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>

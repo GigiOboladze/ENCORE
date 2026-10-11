@@ -1,0 +1,7 @@
+<%- include('_top', { pageTitle: '403' }) %>
+<div class="card card-pad max-w-md text-center">
+  <span class="material-symbols-outlined text-5xl text-amber-500">lock</span>
+  <p class="mt-3 text-forest-800 dark:text-forest-100"><%= lang === 'ka' ? 'ამ გვერდზე წვდომა მხოლოდ Super admin-ს აქვს.' : 'Only a Super admin can access this page.' %></p>
+  <a href="/admin" class="btn-lime mt-5"><%= lang === 'ka' ? 'დაშბორდზე დაბრუნება' : 'Back to dashboard' %></a>
+</div>
+<%- include('_bottom') %>

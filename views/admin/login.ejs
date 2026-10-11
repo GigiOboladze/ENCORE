@@ -1,0 +1,30 @@
+<%- include('../partials/head', { title: 'Admin' }) %>
+<body class="page-bg">
+<main class="grid min-h-screen place-items-center px-4 py-10">
+  <div class="w-full max-w-md">
+    <div class="mb-8 flex items-center justify-between">
+      <a href="/"><%- include('../partials/logo') %></a>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center rounded-full border border-forest-100 bg-white p-0.5 text-xs font-semibold dark:border-graphite-600 dark:bg-graphite-800">
+          <a href="/lang/ka" class="rounded-full px-2.5 py-1 <%= lang === 'ka' ? 'bg-forest-800 text-white dark:bg-lime-400 dark:text-forest-900' : 'text-forest-600 dark:text-forest-200' %>">KA</a>
+          <a href="/lang/en" class="rounded-full px-2.5 py-1 <%= lang === 'en' ? 'bg-forest-800 text-white dark:bg-lime-400 dark:text-forest-900' : 'text-forest-600 dark:text-forest-200' %>">EN</a>
+        </div>
+        <button type="button" data-theme-toggle class="grid h-9 w-9 place-items-center rounded-full border border-forest-100 bg-white text-forest-700 dark:border-graphite-600 dark:bg-graphite-800 dark:text-lime-300" aria-label="Theme"><span class="material-symbols-outlined dark:hidden">dark_mode</span><span class="material-symbols-outlined hidden dark:inline">light_mode</span></button>
+      </div>
+    </div>
+    <form method="post" action="/admin/login" class="card card-pad space-y-4">
+      <div>
+        <span class="label-mono">Admin panel</span>
+        <h1 class="mt-1 text-2xl font-bold text-forest-900 dark:text-white"><%= lang === 'ka' ? 'შესვლა' : 'Sign in' %></h1>
+      </div>
+      <% if (error) { %><div class="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200" role="alert"><span class="material-symbols-outlined">error</span><%= error %></div><% } %>
+      <label class="field"><span class="field-label"><%= lang === 'ka' ? 'მომხმარებელი' : 'Username' %></span><input class="input" name="username" value="<%= username %>" required autocomplete="username" autofocus></label>
+      <label class="field"><span class="field-label"><%= lang === 'ka' ? 'პაროლი' : 'Password' %></span><input class="input" name="password" type="password" required autocomplete="current-password"></label>
+      <button class="btn-lime w-full py-3"><span class="material-symbols-outlined text-base">login</span><%= lang === 'ka' ? 'შესვლა' : 'Sign in' %></button>
+    </form>
+    <p class="mt-6 text-center text-xs text-ink-soft dark:text-forest-300"><a href="/" class="hover:underline">← <%= lang === 'ka' ? 'საიტზე დაბრუნება' : 'Back to site' %></a></p>
+  </div>
+</main>
+<script src="/static/js/app.js" defer></script>
+</body>
+</html>

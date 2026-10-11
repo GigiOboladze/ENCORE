@@ -1,0 +1,23 @@
+<% const ka = lang === 'ka'; %>
+<%- include('_top', { pageTitle: ka ? 'პროდუქტები' : 'Products', action: { href: '/admin/products/new', label: ka ? 'პროდუქტის დამატება' : 'Add product' } }) %>
+<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  <% products.forEach(p => { %>
+    <div class="card flex flex-col overflow-hidden">
+      <div class="relative aspect-[4/3] bg-mint-100 dark:bg-graphite-700">
+        <% if (p.photos[0]) { %><img src="/uploads/<%= p.photos[0] %>" alt="" class="h-full w-full object-cover"><% } else { %><span class="grid h-full place-items-center text-forest-300"><span class="material-symbols-outlined text-5xl">image</span></span><% } %>
+        <span class="absolute left-3 top-3 rounded-full bg-white/90 px-2 py-0.5 font-mono text-[10px] text-forest-800"><%= p.photos.length %>/3 <%= ka ? 'ფოტო' : 'photos' %></span>
+        <% if (!p.active) { %><span class="absolute right-3 top-3 rounded-full bg-forest-900/80 px-2 py-0.5 text-[10px] font-semibold text-white"><%= ka ? 'დამალული' : 'Hidden' %></span><% } %>
+      </div>
+      <div class="flex flex-1 flex-col p-4">
+        <h2 class="font-semibold text-forest-900 dark:text-white"><%= L(p, 'name') %></h2>
+        <div class="mt-1 text-sm text-ink-soft dark:text-forest-300"><%= p.price_from ? (ka ? fmt(p.price_from) + ' ₾-დან' : 'from ' + fmt(p.price_from) + ' ₾') : t('common.priceOnRequest') %><% if (p.cells_needed) { %> · <%= fmt(p.cells_needed) %> <%= t('common.cells') %><% } %></div>
+        <div class="mt-auto flex gap-2 pt-4">
+          <a href="/admin/products/<%= p.id %>/edit" class="btn-forest btn-sm flex-1"><span class="material-symbols-outlined text-base">edit</span><%= t('common.edit') %></a>
+          <a href="/products/<%= p.slug %>" target="_blank" class="btn-ghost btn-sm" aria-label="<%= ka ? 'ნახვა' : 'View' %>"><span class="material-symbols-outlined text-base">open_in_new</span></a>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+<% if (!products.length) { %><p class="card card-pad text-ink-soft"><%= ka ? 'პროდუქტები ჯერ არ არის.' : 'No products yet.' %></p><% } %>
+<%- include('_bottom') %>

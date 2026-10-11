@@ -1,0 +1,149 @@
+<%- include('partials/head', { title: '' }) %>
+<body class="page-bg">
+<%- include('partials/header') %>
+<main id="main">
+  <%# ---------- hero ---------- %>
+  <section class="container-x grid items-center gap-10 pb-12 pt-10 sm:pt-14 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pb-16">
+    <div class="animate-rise">
+      <span class="eyebrow"><span class="dot-live"></span><%= t('hero.badge') %></span>
+      <h1 class="mt-5 font-bold leading-[1.1] text-forest-900 dark:text-white <%= lang === 'ka' ? 'text-3xl sm:text-4xl xl:text-[2.9rem]' : 'text-4xl sm:text-5xl xl:text-[3.4rem]' %>"><%= L(site, 'hero_title') %></h1>
+      <p class="mt-5 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg dark:text-forest-200"><%= L(site, 'hero_sub') %></p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/products" class="btn-lime px-6 py-3 text-base"><span class="material-symbols-outlined">bolt</span><%= t('hero.ctaProducts') %></a>
+        <a href="/contact" class="btn-ghost px-6 py-3 text-base"><span class="material-symbols-outlined">battery_charging_full</span><%= t('hero.ctaHandin') %></a>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-forest-700 dark:text-forest-200">
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-lime-500">verified</span><%= lang === 'ka' ? 'ყოველი ელემენტი შემოწმებულია' : 'Every cell is tested' %></span>
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-lime-500">qr_code_2</span><%= lang === 'ka' ? 'QR პასპორტი ყველა პარტიაზე' : 'QR passport on every batch' %></span>
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-lime-500">recycling</span><%= lang === 'ka' ? '0 კგ ნაგავსაყრელზე' : '0 kg to landfill' %></span>
+      </div>
+    </div>
+
+    <div class="relative animate-rise [animation-delay:120ms]">
+      <div class="overflow-hidden rounded-[1.75rem] border border-forest-100 bg-graphite-800 shadow-lift dark:border-graphite-600">
+        <img src="/static/img/hero.jpeg" alt="<%= lang === 'ka' ? 'ENCORE-ის პროდუქტების ხაზი' : 'ENCORE product line' %>" class="aspect-[16/10] w-full object-cover" fetchpriority="high">
+      </div>
+      <div class="absolute -bottom-6 left-4 right-4 card flex items-center justify-between gap-4 px-5 py-3.5 sm:left-auto sm:right-6 sm:w-80">
+        <div>
+          <div class="label-mono"><%= lang === 'ka' ? 'ცოცხალი ტელემეტრია' : 'Live telemetry' %></div>
+          <div class="mt-1 font-mono text-sm text-forest-900 dark:text-white">SoH <b>86%</b> · IR <b>38 mΩ</b></div>
+        </div>
+        <span class="grade-A">A</span>
+      </div>
+    </div>
+  </section>
+
+  <%# ---------- impact counters ---------- %>
+  <section class="container-x mt-6" aria-labelledby="impact-title">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <span class="label-mono"><%= t('nav.impact') %></span>
+        <h2 id="impact-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('stats.title') %></h2>
+      </div>
+      <p class="text-sm text-ink-soft dark:text-forest-300"><span class="dot-live mr-1.5"></span><%= t('stats.subtitle') %></p>
+    </div>
+    <div class="mt-6 grid gap-px overflow-hidden rounded-2xl border border-forest-100 bg-forest-100 shadow-card sm:grid-cols-2 lg:grid-cols-5 dark:border-graphite-600 dark:bg-graphite-600">
+      <% [
+        ['received', stats.received, 0, 'inventory_2'],
+        ['revived', stats.revived, 0, 'battery_charging_full'],
+        ['kwh', stats.revivedKwh, 1, 'bolt'],
+        ['kg', stats.kgSaved, 0, 'delete_forever'],
+        ['co2', stats.co2Tonnes, 2, 'co2'],
+      ].forEach(([k, v, d, icon]) => { %>
+        <div class="bg-white p-5 dark:bg-graphite-800">
+          <div class="flex items-center justify-between">
+            <span class="label-mono"><%= t('stats.' + k) %></span>
+            <span class="material-symbols-outlined text-forest-300 dark:text-forest-500"><%= icon %></span>
+          </div>
+          <div class="mt-3 font-mono text-3xl font-semibold text-forest-900 dark:text-white" data-count="<%= v %>" data-digits="<%= d %>"><%= fmt(v, d) %></div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="mt-5 grid gap-5 lg:grid-cols-3">
+      <div class="card card-pad">
+        <h3 class="text-base font-semibold text-forest-900 dark:text-white"><%= t('stats.bySource') %></h3>
+        <div class="mt-5"><%- include('partials/bars', { items: Object.entries(stats.bySource).sort((a,b) => b[1]-a[1]).slice(0, 6).map(([k, v], i) => ({ label: t('source.' + k), value: v, cls: i === 0 ? 'bg-lime-400' : 'bg-forest-600/80 dark:bg-forest-500' })), unit: t('common.pcs') }) %></div>
+      </div>
+      <div class="card card-pad">
+        <h3 class="text-base font-semibold text-forest-900 dark:text-white"><%= t('stats.byGrade') %></h3>
+        <div class="mt-5"><%- include('partials/bars', { items: ['A','B','C','D'].map(g => ({ label: t('grade.' + g), value: stats.byGrade[g] || 0, cls: 'bar-' + g })), unit: t('common.pcs') }) %></div>
+      </div>
+      <div class="card card-pad">
+        <h3 class="text-base font-semibold text-forest-900 dark:text-white"><%= t('stats.byMonth') %></h3>
+        <div class="mt-5"><%- include('partials/columns', { items: stats.months.map(m => ({ label: m.key.slice(5) + '/' + m.key.slice(2, 4), value: m.value })) }) %></div>
+      </div>
+    </div>
+  </section>
+
+  <%# ---------- how it works ---------- %>
+  <section class="container-x mt-24" aria-labelledby="how-title">
+    <div class="max-w-2xl">
+      <span class="label-mono"><%= lang === 'ka' ? 'ცირკულარული ციკლი' : 'Circular loop' %></span>
+      <h2 id="how-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('how.title') %></h2>
+      <p class="mt-2 text-ink-soft dark:text-forest-300"><%= t('how.subtitle') %></p>
+    </div>
+    <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <% [['s1','local_shipping'],['s2','neurology'],['s3','grading'],['s4','solar_power'],['s5','recycling']].forEach(([k, icon], i) => { %>
+        <li class="card card-pad relative overflow-hidden">
+          <span class="absolute right-4 top-3 font-mono text-4xl font-bold text-mint-200 dark:text-graphite-700">0<%= i + 1 %></span>
+          <span class="grid h-11 w-11 place-items-center rounded-xl <%= i === 4 ? 'bg-forest-800 text-lime-300' : 'bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300' %>"><span class="material-symbols-outlined"><%= icon %></span></span>
+          <h3 class="relative mt-4 font-semibold text-forest-900 dark:text-white"><%= t('how.' + k) %></h3>
+          <p class="relative mt-1 text-sm text-ink-soft dark:text-forest-300"><%= t('how.' + k + 'd') %></p>
+        </li>
+      <% }) %>
+    </ol>
+  </section>
+
+  <%# ---------- products ---------- %>
+  <section class="container-x mt-24" aria-labelledby="products-title">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="max-w-2xl">
+        <span class="label-mono"><%= lang === 'ka' ? 'მეორე სიცოცხლე' : 'Second life' %></span>
+        <h2 id="products-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('products.title') %></h2>
+        <p class="mt-2 text-ink-soft dark:text-forest-300"><%= t('products.subtitle') %></p>
+      </div>
+      <a href="/products" class="btn-ghost"><%= lang === 'ka' ? 'ყველა პროდუქტი' : 'All products' %><span class="material-symbols-outlined text-base">arrow_forward</span></a>
+    </div>
+    <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <% products.forEach(p => { %><%- include('partials/product-card', { p }) %><% }) %>
+    </div>
+  </section>
+
+  <%# ---------- environment ---------- %>
+  <section class="container-x mt-24" aria-labelledby="env-title">
+    <div class="card-dark overflow-hidden p-6 sm:p-10">
+      <div class="space-y-8">
+        <div class="flex flex-wrap items-end justify-between gap-6">
+          <div class="max-w-2xl">
+            <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300"><%= lang === 'ka' ? 'გარემოს დაცვა' : 'Environment' %></span>
+            <h2 id="env-title" class="mt-2 text-2xl font-bold sm:text-3xl"><%= t('env.title') %></h2>
+            <p class="mt-3 text-forest-100/80"><%= t('env.subtitle') %></p>
+          </div>
+          <a href="/about" class="btn-lime"><%= t('nav.about') %><span class="material-symbols-outlined text-base">arrow_forward</span></a>
+        </div>
+        <div class="grid gap-4 md:grid-cols-3">
+          <% [['tox','skull'],['fire','local_fire_department'],['co2','factory']].forEach(([k, icon]) => { %>
+            <div class="rounded-2xl bg-white/5 p-5 ring-1 ring-white/10">
+              <span class="material-symbols-outlined text-2xl text-lime-300"><%= icon %></span>
+              <h3 class="mt-3 font-semibold"><%= t('env.' + k + 'Title') %></h3>
+              <p class="mt-1.5 text-sm text-forest-100/75"><%= t('env.' + k + 'Text') %></p>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# ---------- hand-in CTA ---------- %>
+  <section class="container-x mt-10">
+    <div class="flex flex-col items-start justify-between gap-6 rounded-[1.75rem] bg-lime-400 p-6 text-forest-900 sm:p-10 lg:flex-row lg:items-center">
+      <div class="max-w-2xl">
+        <h2 class="text-2xl font-bold sm:text-3xl"><%= t('handinCta.title') %></h2>
+        <p class="mt-2 text-forest-800"><%= t('handinCta.text') %></p>
+      </div>
+      <a href="/contact" class="btn bg-forest-900 px-6 py-3 text-base text-white hover:bg-forest-800"><span class="material-symbols-outlined">battery_charging_full</span><%= t('handinCta.button') %></a>
+    </div>
+  </section>
+</main>
+<%- include('partials/footer') %>

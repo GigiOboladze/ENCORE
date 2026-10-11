@@ -1,0 +1,52 @@
+<% const ka = lang === 'ka'; %>
+<%- include('_top', { pageTitle: ka ? 'ელემენტები' : 'Cells', action: { href: '/admin/cells/new', label: ka ? 'ელემენტის დამატება' : 'Add cells' } }) %>
+
+<form method="get" class="card mb-4 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_auto]">
+  <label class="relative"><span class="sr-only"><%= t('common.search') %></span>
+    <span class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-forest-300">search</span>
+    <input class="input pl-10" name="q" value="<%= filters.q %>" placeholder="<%= ka ? 'კოდი ან შენიშვნა…' : 'Code or note…' %>">
+  </label>
+  <select class="input" name="source" aria-label="<%= t('fields.source') %>"><option value=""><%= t('fields.source') %>: <%= t('common.all') %></option><% C.SOURCES.forEach(s => { %><option value="<%= s %>" <%= filters.source === s ? 'selected' : '' %>><%= t('source.' + s) %></option><% }) %></select>
+  <select class="input" name="chemistry" aria-label="<%= t('fields.chemistry') %>"><option value=""><%= t('fields.chemistry') %>: <%= t('common.all') %></option><% C.CHEMISTRIES.forEach(s => { %><option value="<%= s %>" <%= filters.chemistry === s ? 'selected' : '' %>><%= s === 'other' ? t('chem.other') : s %></option><% }) %></select>
+  <select class="input" name="grade" aria-label="<%= t('fields.grade') %>"><option value=""><%= t('fields.grade') %>: <%= t('common.all') %></option><% C.GRADES.forEach(g => { %><option value="<%= g %>" <%= filters.grade === g ? 'selected' : '' %>><%= g %></option><% }) %></select>
+  <div class="flex gap-2"><button class="btn-forest flex-1"><%= ka ? 'ფილტრი' : 'Filter' %></button><% if (filters.q || filters.source || filters.grade || filters.chemistry) { %><a href="/admin/cells" class="btn-ghost" aria-label="Reset"><span class="material-symbols-outlined">close</span></a><% } %></div>
+</form>
+
+<div class="mb-4 flex flex-wrap gap-3 text-sm">
+  <span class="rounded-full bg-white px-3 py-1.5 ring-1 ring-forest-100 dark:bg-graphite-800 dark:ring-graphite-600"><%= ka ? 'პარტია' : 'Batches' %>: <b class="font-mono"><%= cells.length %></b></span>
+  <span class="rounded-full bg-white px-3 py-1.5 ring-1 ring-forest-100 dark:bg-graphite-800 dark:ring-graphite-600"><%= ka ? 'ელემენტი' : 'Cells' %>: <b class="font-mono"><%= fmt(totals.qty) %></b></span>
+  <span class="rounded-full bg-white px-3 py-1.5 ring-1 ring-forest-100 dark:bg-graphite-800 dark:ring-graphite-600"><%= ka ? 'ენერგია' : 'Energy' %>: <b class="font-mono"><%= fmt(totals.wh / 1000, 1) %> kWh</b></span>
+  <span class="rounded-full bg-white px-3 py-1.5 ring-1 ring-forest-100 dark:bg-graphite-800 dark:ring-graphite-600"><%= ka ? 'ღირებულება' : 'Value' %>: <b class="font-mono"><%= money(totals.value) %></b></span>
+</div>
+
+<div class="table-wrap">
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th><%= t('fields.code') %></th><th><%= t('fields.chemistry') %> / <%= t('fields.form') %></th><th><%= t('fields.capacity') %></th><th><%= t('fields.source') %></th>
+        <th class="text-right"><%= t('fields.quantity') %></th><th class="text-right"><%= ka ? 'გამოყენ.' : 'Used' %></th><th class="text-right"><%= t('fields.unitPrice') %></th><th>SoH</th><th><%= t('fields.grade') %></th><th><%= t('fields.receivedAt') %></th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% cells.forEach(c => { %>
+        <tr>
+          <td class="whitespace-nowrap"><a href="/admin/cells/<%= c.id %>" class="font-mono text-xs font-semibold text-forest-800 hover:underline dark:text-lime-300"><%= c.code %></a></td>
+          <td class="whitespace-nowrap"><span class="font-medium"><%= c.chemistry === 'other' ? t('chem.other') : c.chemistry %></span> <span class="text-ink-soft dark:text-forest-300">· <%= c.form_factor === 'other' ? (c.form_other || t('form.other')) : c.form_factor %></span></td>
+          <td class="whitespace-nowrap font-mono text-xs"><%= fmt(c.capacity_value, 2) %> <%= c.capacity_unit %></td>
+          <td class="whitespace-nowrap"><%= c.source === 'other' ? (c.source_other || t('source.other')) : t('source.' + c.source) %></td>
+          <td class="text-right font-mono"><%= fmt(c.quantity) %></td>
+          <td class="text-right font-mono text-ink-soft dark:text-forest-300"><%= fmt(c.used_qty) %></td>
+          <td class="whitespace-nowrap text-right font-mono"><%= c.unit_price != null ? money(c.unit_price) : '—' %></td>
+          <td class="font-mono text-xs"><%= c.soh ? fmt(c.soh, 0) + '%' : '—' %></td>
+          <td><span class="grade-<%= c.grade %>"><%= c.grade %></span></td>
+          <td class="whitespace-nowrap font-mono text-xs text-ink-soft dark:text-forest-300"><%= c.received_at %></td>
+          <td class="whitespace-nowrap text-right">
+            <a href="/admin/cells/<%= c.id %>/edit" class="inline-grid h-8 w-8 place-items-center rounded-full text-forest-600 hover:bg-mint-100 dark:text-forest-200 dark:hover:bg-graphite-700" aria-label="<%= t('common.edit') %>"><span class="material-symbols-outlined text-lg">edit</span></a>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (!cells.length) { %><tr><td colspan="11" class="py-10 text-center text-ink-soft"><%= ka ? 'ჩანაწერები ვერ მოიძებნა.' : 'No records found.' %> <a href="/admin/cells/new" class="font-semibold text-forest-700 underline dark:text-lime-300"><%= ka ? 'დაამატე პირველი პარტია' : 'Add the first batch' %></a></td></tr><% } %>
+    </tbody>
+  </table>
+</div>
+<%- include('_bottom') %>

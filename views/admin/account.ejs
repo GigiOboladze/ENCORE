@@ -1,0 +1,11 @@
+<% const ka = lang === 'ka'; %>
+<%- include('_top', { pageTitle: ka ? 'ჩემი ანგარიში' : 'My account' }) %>
+<form method="post" action="/admin/account" class="card card-pad max-w-md space-y-4">
+  <div><span class="label-mono"><%= admin.role === 'super' ? 'Super admin' : 'Admin' %></span><h2 class="mt-1 text-xl font-semibold text-forest-900 dark:text-white"><%= admin.username %></h2></div>
+  <% if (error) { %><div class="rounded-xl bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200" role="alert"><%= error %></div><% } %>
+  <label class="field"><span class="field-label"><%= ka ? 'მიმდინარე პაროლი' : 'Current password' %></span><input class="input" type="password" name="current" required autocomplete="current-password"></label>
+  <label class="field"><span class="field-label"><%= ka ? 'ახალი პაროლი' : 'New password' %></span><input class="input" type="password" name="password" minlength="8" required autocomplete="new-password"></label>
+  <label class="field"><span class="field-label"><%= ka ? 'გაიმეორე ახალი პაროლი' : 'Repeat new password' %></span><input class="input" type="password" name="confirm" minlength="8" required autocomplete="new-password"></label>
+  <button class="btn-lime w-full"><span class="material-symbols-outlined text-base">lock_reset</span><%= ka ? 'პაროლის შეცვლა' : 'Change password' %></button>
+</form>
+<%- include('_bottom') %>

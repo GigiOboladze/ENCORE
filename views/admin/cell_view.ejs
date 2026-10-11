@@ -1,0 +1,64 @@
+<% const ka = lang === 'ka'; const wh = C.unitWh(cell); const kwhLive = cell.grade === 'D' ? 0 : cell.quantity * wh * C.effectiveSoh(cell) / 100 / 1000; %>
+<%- include('_top', { pageTitle: cell.code, action: { href: '/admin/cells/new', label: ka ? 'ახალი პარტია' : 'New batch' } }) %>
+
+<div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+  <a href="/admin/cells" class="inline-flex items-center gap-1 text-sm font-medium text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-lime-300"><span class="material-symbols-outlined text-base">arrow_back</span><%= ka ? 'ყველა ელემენტი' : 'All cells' %></a>
+  <div class="flex gap-2">
+    <a href="/passport/<%= cell.code %>" target="_blank" class="btn-ghost btn-sm"><span class="material-symbols-outlined text-base">open_in_new</span><%= ka ? 'საჯარო პასპორტი' : 'Public passport' %></a>
+    <a href="/admin/cells/<%= cell.id %>/edit" class="btn-forest btn-sm"><span class="material-symbols-outlined text-base">edit</span><%= t('common.edit') %></a>
+  </div>
+</div>
+
+<div class="grid gap-5 xl:grid-cols-[1fr_340px]">
+  <div class="card overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-forest-100 bg-mint-50 px-6 py-4 dark:border-graphite-600 dark:bg-graphite-850">
+      <div>
+        <div class="font-mono text-xl font-semibold text-forest-900 dark:text-white"><%= cell.code %></div>
+        <div class="text-sm text-ink-soft dark:text-forest-300"><%= fmt(cell.quantity) %> <%= t('common.pcs') %> · <%= t('fields.receivedAt') %> <%= cell.received_at %></div>
+      </div>
+      <span class="grade-<%= cell.grade %> !px-3 !py-1 text-sm"><%= cell.grade %> · <%= t('grade.' + cell.grade).split('—')[1] %></span>
+    </div>
+    <dl class="grid gap-px bg-forest-50 sm:grid-cols-2 lg:grid-cols-3 dark:bg-graphite-700">
+      <% [
+        ['fields.chemistry', cell.chemistry === 'other' ? t('chem.other') : cell.chemistry],
+        ['fields.form', cell.form_factor === 'other' ? (cell.form_other || t('form.other')) : t('form.' + cell.form_factor)],
+        ['fields.capacity', fmt(cell.capacity_value, 2) + ' ' + cell.capacity_unit + ' (' + fmt(wh, 1) + ' Wh)'],
+        ['fields.source', cell.source === 'other' ? (cell.source_other || t('source.other')) : t('source.' + cell.source)],
+        ['fields.quantity', fmt(cell.quantity) + ' ' + t('common.pcs')],
+        ['fields.used', fmt(cell.used_qty) + ' ' + t('common.pcs')],
+        ['fields.unitPrice', cell.unit_price != null ? money(cell.unit_price) : '—'],
+        ['fields.soh', cell.soh ? fmt(cell.soh, 1) + '%' : '—'],
+        ['fields.voltage', cell.voltage ? fmt(cell.voltage, 2) + ' V' : '—'],
+        ['fields.ir', cell.internal_resistance ? fmt(cell.internal_resistance, 1) + ' mΩ' : '—'],
+        ['fields.weight', fmt(C.unitWeight(cell), 0) + ' g' + (cell.weight_g ? '' : (ka ? ' (შეფასება)' : ' (est.)'))],
+        [ka ? 'ჯამური ღირებულება' : 'Total value', money((cell.unit_price || 0) * cell.quantity)],
+      ].forEach(([k, val]) => { %>
+        <div class="bg-white px-5 py-4 dark:bg-graphite-800"><dt class="label-mono"><%= k.includes('.') ? t(k) : k %></dt><dd class="mt-1 font-medium text-forest-900 dark:text-white"><%= val %></dd></div>
+      <% }) %>
+    </dl>
+    <% if (cell.notes || cell.photo) { %>
+      <div class="flex flex-wrap gap-5 border-t border-forest-100 p-6 dark:border-graphite-600">
+        <% if (cell.photo) { %><img src="/uploads/<%= cell.photo %>" alt="" class="h-40 w-40 rounded-xl object-cover"><% } %>
+        <% if (cell.notes) { %><div class="min-w-0 flex-1"><div class="label-mono"><%= t('fields.notes') %></div><p class="mt-1 whitespace-pre-line text-sm text-forest-800 dark:text-forest-100"><%= cell.notes %></p></div><% } %>
+      </div>
+    <% } %>
+  </div>
+
+  <aside class="space-y-4">
+    <div class="card card-pad text-center">
+      <div class="label-mono"><%= ka ? 'QR პასპორტი' : 'QR passport' %></div>
+      <div id="qr-box" class="mx-auto mt-3 w-48 rounded-xl bg-white p-2 ring-1 ring-forest-100"><%- qr %></div>
+      <div class="mt-2 break-all font-mono text-[11px] text-ink-soft dark:text-forest-300"><%= url %></div>
+      <button type="button" onclick="window.print()" class="btn-ghost btn-sm mt-4"><span class="material-symbols-outlined text-base">print</span><%= ka ? 'ეტიკეტის ბეჭდვა' : 'Print label' %></button>
+    </div>
+    <div class="card-dark p-6">
+      <div class="font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300"><%= ka ? 'პარტიის გავლენა' : 'Batch impact' %></div>
+      <div class="mt-4 grid grid-cols-2 gap-4">
+        <div><div class="font-mono text-xl font-semibold"><%= fmt(cell.quantity * C.unitWeight(cell) / 1000, 1) %></div><div class="text-xs text-forest-200/70"><%= ka ? 'კგ გადარჩა' : 'kg saved' %></div></div>
+        <div><div class="font-mono text-xl font-semibold text-lime-300"><%= fmt(kwhLive, 2) %></div><div class="text-xs text-forest-200/70"><%= ka ? 'kWh მეორე სიცოცხლეში' : 'kWh second life' %></div></div>
+      </div>
+    </div>
+  </aside>
+</div>
+<style>@media print { body * { visibility: hidden; } #qr-box, #qr-box * { visibility: visible; } #qr-box { position: fixed; left: 0; top: 0; width: 60mm; } }</style>
+<%- include('_bottom') %>

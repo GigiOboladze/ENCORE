@@ -1,0 +1,126 @@
+<% const ka = lang === 'ka'; const editing = Boolean(cell.id); const v = (k) => cell[k] == null ? '' : cell[k]; %>
+<%- include('_top', { pageTitle: editing ? (ka ? 'პარტიის რედაქტირება' : 'Edit batch') + ' · ' + cell.code : (ka ? 'ელემენტის დამატება' : 'Add cells') }) %>
+
+<a href="<%= editing ? '/admin/cells/' + cell.id : '/admin/cells' %>" class="mb-4 inline-flex items-center gap-1 text-sm font-medium text-forest-600 hover:text-forest-900 dark:text-forest-300 dark:hover:text-lime-300"><span class="material-symbols-outlined text-base">arrow_back</span><%= t('common.back') %></a>
+
+<% if (errors.length) { %>
+  <div class="mb-4 rounded-xl bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/40 dark:text-red-200" role="alert">
+    <% errors.forEach(e => { %><div class="flex items-center gap-2"><span class="material-symbols-outlined text-base">error</span><%= e %></div><% }) %>
+  </div>
+<% } %>
+
+<form method="post" action="<%= editing ? '/admin/cells/' + cell.id : '/admin/cells' %>" enctype="multipart/form-data" data-cell-form data-editing="<%= editing ? 1 : 0 %>" class="grid gap-5 xl:grid-cols-[1fr_340px]">
+  <div class="space-y-5">
+    <section class="card card-pad">
+      <h2 class="label-mono">01 · <%= ka ? 'ელემენტის ტიპი' : 'Cell type' %></h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <label class="field"><span class="field-label"><%= t('fields.chemistry') %> *</span>
+          <select class="input" name="chemistry"><% C.CHEMISTRIES.forEach(s => { %><option value="<%= s %>" <%= cell.chemistry === s ? 'selected' : '' %>><%= s === 'other' ? t('chem.other') : s %></option><% }) %></select>
+        </label>
+        <div>
+          <label class="field"><span class="field-label"><%= t('fields.form') %> *</span>
+            <select class="input" name="form_factor" data-other="form-other-wrap"><% C.FORMS.forEach(s => { %><option value="<%= s %>" <%= cell.form_factor === s ? 'selected' : '' %>><%= t('form.' + s) %></option><% }) %></select>
+          </label>
+          <label id="form-other-wrap" class="field mt-2 hidden"><span class="sr-only"><%= t('fields.form') %></span><input class="input" name="form_other" maxlength="60" value="<%= v('form_other') %>" placeholder="<%= ka ? 'მიუთითე ფორმა' : 'Specify form factor' %>"></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card-pad">
+      <h2 class="label-mono">02 · <%= ka ? 'ზომა (ტევადობა) და რაოდენობა' : 'Size (capacity) and quantity' %></h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="field"><span class="field-label"><%= t('fields.capacity') %> *</span>
+          <div class="flex gap-2">
+            <input class="input" name="capacity_value" inputmode="decimal" required value="<%= v('capacity_value') %>" placeholder="3400" aria-label="<%= t('fields.capacity') %>">
+            <select class="input !w-24 shrink-0" name="capacity_unit" aria-label="Unit"><% C.UNITS.forEach(u => { %><option <%= cell.capacity_unit === u ? 'selected' : '' %>><%= u %></option><% }) %></select>
+          </div>
+        </div>
+        <label class="field"><span class="field-label"><%= t('fields.quantity') %> (<%= t('common.pcs') %>) *</span><input class="input" name="quantity" type="number" min="1" required value="<%= v('quantity') %>"></label>
+        <label class="field"><span class="field-label"><%= t('fields.used') %></span><input class="input" name="used_qty" type="number" min="0" value="<%= v('used_qty') || 0 %>"><span class="field-hint"><%= ka ? 'რამდენი უკვე ჩაიდო პროდუქტებში' : 'How many already went into products' %></span></label>
+      </div>
+    </section>
+
+    <section class="card card-pad">
+      <h2 class="label-mono">03 · <%= ka ? 'წარმომავლობა და ფასი' : 'Origin and price' %></h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <label class="field"><span class="field-label"><%= t('fields.source') %> *</span>
+            <select class="input" name="source" data-other="source-other-wrap"><% C.SOURCES.forEach(s => { %><option value="<%= s %>" <%= cell.source === s ? 'selected' : '' %>><%= t('source.' + s) %></option><% }) %></select>
+          </label>
+          <label id="source-other-wrap" class="field mt-2 hidden"><span class="sr-only"><%= t('fields.source') %></span><input class="input" name="source_other" maxlength="60" value="<%= v('source_other') %>" placeholder="<%= ka ? 'მაგ. სამედიცინო მოწყობილობა' : 'e.g. medical device' %>"></label>
+        </div>
+        <label class="field"><span class="field-label"><%= t('fields.unitPrice') %> (₾)</span><input class="input" name="unit_price" inputmode="decimal" value="<%= v('unit_price') %>" placeholder="1.92"><span class="field-hint"><%= ka ? 'ფასების ფაილით: ვარგისი Tesla 18650 ≈ 1.92 ₾' : 'Price sheet: usable Tesla 18650 ≈ 1.92 ₾' %></span></label>
+        <label class="field"><span class="field-label"><%= t('fields.receivedAt') %></span><input class="input" type="date" name="received_at" value="<%= v('received_at') %>"></label>
+      </div>
+    </section>
+
+    <section class="card card-pad">
+      <h2 class="label-mono">04 · <%= ka ? 'დიაგნოსტიკა' : 'Diagnostics' %></h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <label class="field"><span class="field-label"><%= t('fields.soh') %>, %</span><input class="input" name="soh" inputmode="decimal" value="<%= v('soh') %>" placeholder="85"></label>
+        <label class="field"><span class="field-label"><%= t('fields.voltage') %>, V</span><input class="input" name="voltage" inputmode="decimal" value="<%= v('voltage') %>" placeholder="3.6"></label>
+        <label class="field"><span class="field-label"><%= t('fields.ir') %>, mΩ</span><input class="input" name="internal_resistance" inputmode="decimal" value="<%= v('internal_resistance') %>" placeholder="40"></label>
+        <label class="field"><span class="field-label"><%= t('fields.weight') %>, g</span><input class="input" name="weight_g" inputmode="decimal" value="<%= v('weight_g') %>" placeholder="<%= ka ? 'ავტო' : 'auto' %>"></label>
+      </div>
+      <fieldset class="mt-5">
+        <legend class="field-label"><%= t('fields.grade') %> <span class="font-normal text-ink-soft dark:text-forest-300">— <%= ka ? 'SoH-ით ავტომატურად შეირჩევა' : 'auto-suggested from SoH' %></span></legend>
+        <div class="grid gap-2 sm:grid-cols-4">
+          <% C.GRADES.forEach(g => { %>
+            <label class="flex cursor-pointer flex-col rounded-xl border border-forest-100 p-3 transition has-[:checked]:border-lime-400 has-[:checked]:bg-lime-50 has-[:checked]:ring-4 has-[:checked]:ring-lime-400/20 dark:border-graphite-600 dark:has-[:checked]:bg-lime-400/10">
+              <input type="radio" name="grade" value="<%= g %>" class="sr-only" <%= cell.grade === g ? 'checked' : '' %>>
+              <span class="flex items-center justify-between"><span class="grade-<%= g %>"><%= g %></span><span class="font-mono text-[10px] text-ink-soft dark:text-forest-300"><%= t('gradeShort.' + g) %></span></span>
+              <span class="mt-2 text-xs text-forest-800 dark:text-forest-100"><%= t('grade.' + g).split('—')[1] %></span>
+            </label>
+          <% }) %>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="card card-pad">
+      <h2 class="label-mono">05 · <%= ka ? 'ფოტო და შენიშვნა' : 'Photo and notes' %></h2>
+      <div class="mt-4 grid gap-4 lg:grid-cols-2">
+        <div>
+          <span class="field-label"><%= t('fields.photo') %> <span class="font-normal text-ink-soft">(<%= t('common.optional') %>)</span></span>
+          <label class="flex cursor-pointer items-center gap-3 rounded-xl border-2 border-dashed border-forest-200 p-4 text-sm text-forest-700 transition hover:border-lime-400 hover:bg-lime-50 dark:border-graphite-500 dark:text-forest-200 dark:hover:bg-lime-400/5">
+            <span class="material-symbols-outlined text-2xl text-lime-500">add_a_photo</span>
+            <span><%= ka ? 'აირჩიე სურათი (JPG, PNG, WEBP · 6MB-მდე)' : 'Choose an image (JPG, PNG, WEBP · up to 6MB)' %></span>
+            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" class="sr-only" data-preview="cell-photo-preview" data-max="1">
+          </label>
+          <div id="cell-photo-preview" class="mt-3 flex gap-2"></div>
+          <% if (cell.photo) { %>
+            <div class="mt-3 flex items-center gap-3"><img src="/uploads/<%= cell.photo %>" alt="" class="h-20 w-20 rounded-xl object-cover"><label class="flex items-center gap-2 text-sm"><input type="checkbox" name="remove_photo" value="1" class="rounded"> <%= ka ? 'ფოტოს წაშლა' : 'Remove photo' %></label></div>
+          <% } %>
+        </div>
+        <label class="field"><span class="field-label"><%= t('fields.notes') %></span><textarea class="input" name="notes" maxlength="2000" placeholder="<%= ka ? 'მაგ. Tesla Model S მოდულიდან, 2 გაბერილი გამოირიცხა' : 'e.g. from a Tesla Model S module, 2 swollen cells removed' %>"><%= v('notes') %></textarea></label>
+      </div>
+    </section>
+  </div>
+
+  <aside class="xl:sticky xl:top-24 xl:self-start">
+    <div class="card-dark p-6">
+      <div class="flex items-center justify-between">
+        <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300"><%= ka ? 'ცოცხალი შეჯამება' : 'Live summary' %></span>
+        <span data-sum="grade" class="grade-<%= cell.grade || 'B' %>"><%= cell.grade || 'B' %></span>
+      </div>
+      <dl class="mt-5 space-y-3 text-sm">
+        <div class="flex justify-between gap-3"><dt class="text-forest-200/70"><%= ka ? 'ენერგია 1 ცალზე' : 'Energy per unit' %></dt><dd class="font-mono"><span data-sum="wh">0</span> Wh</dd></div>
+        <div class="flex justify-between gap-3"><dt class="text-forest-200/70"><%= ka ? 'ნომინალური ჯამი' : 'Nameplate total' %></dt><dd class="font-mono"><span data-sum="totalKwh">0</span> kWh</dd></div>
+        <div class="flex justify-between gap-3"><dt class="text-forest-200/70"><%= ka ? 'მეორე სიცოცხლეში' : 'In second life' %></dt><dd class="font-mono text-lime-300"><span data-sum="liveKwh">0</span> kWh</dd></div>
+        <div class="flex justify-between gap-3"><dt class="text-forest-200/70"><%= ka ? 'წონა (შეფასება)' : 'Weight (est.)' %></dt><dd class="font-mono"><span data-sum="kg">0</span> kg</dd></div>
+        <div class="flex justify-between gap-3 border-t border-white/10 pt-3"><dt class="text-forest-200/70"><%= ka ? 'ჯამური ღირებულება' : 'Total value' %></dt><dd class="font-mono text-lg font-semibold"><span data-sum="value">0</span> ₾</dd></div>
+      </dl>
+      <div class="mt-5 flex items-center gap-3 rounded-xl bg-white/5 p-3 ring-1 ring-white/10">
+        <span class="material-symbols-outlined text-3xl text-lime-300">qr_code_2</span>
+        <div class="text-xs text-forest-200/80"><div class="font-mono text-sm text-white"><%= editing ? cell.code : 'ENC-' + String(cell.received_at || '').slice(0, 4) + '-#####' %></div><%= ka ? 'QR პასპორტი შენახვისას შეიქმნება' : 'QR passport is created on save' %></div>
+      </div>
+      <button class="btn-lime mt-5 w-full py-3"><span class="material-symbols-outlined text-base">save</span><%= editing ? t('common.save') : (ka ? 'პარტიის დამატება' : 'Add batch') %></button>
+    </div>
+  </aside>
+</form>
+
+<% if (editing) { %>
+  <form method="post" action="/admin/cells/<%= cell.id %>/delete" class="mt-6" data-confirm="<%= ka ? 'წავშალო პარტია ' + cell.code + '? ეს მოქმედება შეუქცევადია.' : 'Delete batch ' + cell.code + '? This cannot be undone.' %>">
+    <button class="btn-danger"><span class="material-symbols-outlined text-base">delete</span><%= ka ? 'პარტიის წაშლა' : 'Delete batch' %></button>
+  </form>
+<% } %>
+<%- include('_bottom') %>

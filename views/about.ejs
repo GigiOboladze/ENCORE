@@ -1,0 +1,90 @@
+<%- include('partials/head', { title: t('about.title') }) %>
+<body class="page-bg">
+<%- include('partials/header') %>
+<main id="main" class="container-x pt-12">
+  <section class="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+    <div>
+      <span class="eyebrow"><span class="dot-live"></span>ENCORE</span>
+      <h1 class="mt-4 text-3xl font-bold text-forest-900 sm:text-5xl dark:text-white"><%= t('about.title') %></h1>
+      <p class="mt-4 text-lg text-ink-soft dark:text-forest-200"><%= t('about.lead') %></p>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <% [['received', stats.received, 0],['kwh', stats.revivedKwh, 1],['kg', stats.kgSaved, 0],['co2', stats.co2Tonnes, 2]].forEach(([k, v, d], i) => { %>
+        <div class="<%= i === 0 ? 'card-dark' : 'card' %> p-5">
+          <div class="<%= i === 0 ? 'font-mono text-[11px] uppercase tracking-[0.14em] text-lime-300' : 'label-mono' %>"><%= t('stats.' + k) %></div>
+          <div class="mt-2 font-mono text-2xl font-semibold <%= i === 0 ? 'text-white' : 'text-forest-900 dark:text-white' %>" data-count="<%= v %>" data-digits="<%= d %>"><%= fmt(v, d) %></div>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="mt-16 grid gap-6 lg:grid-cols-2">
+    <div class="card card-pad">
+      <span class="grid h-11 w-11 place-items-center rounded-xl bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300"><span class="material-symbols-outlined">flag</span></span>
+      <h2 class="mt-4 text-2xl font-bold text-forest-900 dark:text-white"><%= t('about.missionTitle') %></h2>
+      <p class="mt-3 leading-relaxed text-ink-soft dark:text-forest-200"><%= t('about.mission') %></p>
+    </div>
+    <div class="card-dark p-6 sm:p-8">
+      <span class="grid h-11 w-11 place-items-center rounded-xl bg-lime-400 text-forest-900"><span class="material-symbols-outlined">eco</span></span>
+      <h2 class="mt-4 text-2xl font-bold"><%= t('about.impactTitle') %></h2>
+      <ul class="mt-4 space-y-3">
+        <% ['impact1','impact2','impact3','impact4'].forEach(k => { %>
+          <li class="flex gap-3 text-forest-100/90"><span class="material-symbols-outlined mt-0.5 text-lime-300">check_circle</span><span><%= t('about.' + k) %></span></li>
+        <% }) %>
+      </ul>
+    </div>
+  </section>
+
+  <section class="mt-16" aria-labelledby="env-title">
+    <span class="label-mono"><%= lang === 'ka' ? 'პრობლემა' : 'The problem' %></span>
+    <h2 id="env-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('env.subtitle') %></h2>
+    <div class="mt-6 grid gap-4 md:grid-cols-3">
+      <% [['tox','skull'],['fire','local_fire_department'],['co2','factory']].forEach(([k, icon]) => { %>
+        <div class="card card-pad border-l-4 !border-l-red-400">
+          <span class="material-symbols-outlined text-2xl text-red-500"><%= icon %></span>
+          <h3 class="mt-3 font-semibold text-forest-900 dark:text-white"><%= t('env.' + k + 'Title') %></h3>
+          <p class="mt-1.5 text-sm text-ink-soft dark:text-forest-300"><%= t('env.' + k + 'Text') %></p>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="mt-16" aria-labelledby="tech-title">
+    <span class="label-mono"><%= lang === 'ka' ? 'გადაწყვეტა' : 'The solution' %></span>
+    <h2 id="tech-title" class="mt-1 text-2xl font-bold text-forest-900 sm:text-3xl dark:text-white"><%= t('about.techTitle') %></h2>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% [['tech1','neurology'],['tech2','grading'],['tech3','precision_manufacturing'],['tech4','qr_code_2']].forEach(([k, icon], i) => { %>
+        <div class="card card-pad">
+          <div class="flex items-center justify-between">
+            <span class="grid h-11 w-11 place-items-center rounded-xl bg-lime-100 text-forest-800 dark:bg-lime-400/15 dark:text-lime-300"><span class="material-symbols-outlined"><%= icon %></span></span>
+            <span class="font-mono text-sm text-forest-300">0<%= i + 1 %></span>
+          </div>
+          <h3 class="mt-4 font-semibold text-forest-900 dark:text-white"><%= t('about.' + k + 't') %></h3>
+          <p class="mt-1.5 text-sm text-ink-soft dark:text-forest-300"><%= t('about.' + k) %></p>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="mt-16">
+    <h2 class="text-2xl font-bold text-forest-900 dark:text-white"><%= t('about.gradesTitle') %></h2>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <% ['A','B','C','D'].forEach(g => { %>
+        <div class="card card-pad">
+          <span class="grade-<%= g %> !px-3 !py-1 text-sm"><%= g %></span>
+          <div class="mt-3 font-mono text-sm text-forest-600 dark:text-lime-300/80"><%= t('gradeShort.' + g) %></div>
+          <p class="mt-1 text-sm font-medium text-forest-900 dark:text-white"><%= t('grade.' + g).split('—')[1] %></p>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="mt-16 flex flex-col items-start justify-between gap-6 rounded-[1.75rem] bg-lime-400 p-6 text-forest-900 sm:p-10 lg:flex-row lg:items-center">
+    <div class="max-w-2xl">
+      <h2 class="text-2xl font-bold sm:text-3xl"><%= t('handinCta.title') %></h2>
+      <p class="mt-2 text-forest-800"><%= t('handinCta.text') %></p>
+    </div>
+    <a href="/contact" class="btn bg-forest-900 px-6 py-3 text-base text-white hover:bg-forest-800"><%= t('handinCta.button') %></a>
+  </section>
+</main>
+<%- include('partials/footer') %>

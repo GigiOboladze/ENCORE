@@ -1,0 +1,57 @@
+<%- include('../partials/head', { title: (locals.pageTitle || 'Admin') + ' · Admin' }) %>
+<%
+  const ka = lang === 'ka';
+  const nav = [
+    { href: '/admin', icon: 'space_dashboard', label: ka ? 'დაშბორდი' : 'Dashboard', exact: true },
+    { href: '/admin/cells', icon: 'battery_full', label: ka ? 'ელემენტები' : 'Cells' },
+    { href: '/admin/products', icon: 'inventory_2', label: ka ? 'პროდუქტები' : 'Products' },
+    { href: '/admin/orders', icon: 'shopping_bag', label: ka ? 'შეკვეთები' : 'Orders', badge: counts.orders },
+    { href: '/admin/inquiries', icon: 'move_to_inbox', label: ka ? 'ჩაბარება / წერილები' : 'Hand-ins & messages', badge: counts.inquiries },
+    ...(admin.role === 'super' ? [{ href: '/admin/admins', icon: 'admin_panel_settings', label: ka ? 'ადმინები' : 'Admins' }] : []),
+    { href: '/admin/settings', icon: 'tune', label: ka ? 'საიტის პარამეტრები' : 'Site settings' },
+  ];
+  const active = (n) => n.exact ? (path === '/admin' || path === '/admin/') : path.startsWith(n.href);
+%>
+<body class="bg-mint-50 dark:bg-graphite-900">
+<div class="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
+  <aside id="admin-nav" data-display="flex" class="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col bg-forest-900 px-4 py-5 dark:bg-graphite-950 lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-auto">
+    <a href="/admin" class="px-2"><%- include('../partials/logo', { light: true }) %></a>
+    <div class="mt-1 px-2 font-mono text-[10px] uppercase tracking-[0.16em] text-lime-300/80">Admin panel</div>
+    <nav class="mt-8 flex flex-1 flex-col gap-1" aria-label="Admin">
+      <% nav.forEach(n => { %>
+        <a href="<%= n.href %>" class="side-link <%= active(n) ? 'active' : '' %>">
+          <span class="material-symbols-outlined"><%= n.icon %></span><span class="flex-1"><%= n.label %></span>
+          <% if (n.badge) { %><span class="rounded-full bg-lime-400 px-2 py-0.5 font-mono text-[10px] font-bold text-forest-900 <%= active(n) ? '!bg-forest-900 !text-lime-300' : '' %>"><%= n.badge %></span><% } %>
+        </a>
+      <% }) %>
+    </nav>
+    <div class="mt-4 space-y-1 border-t border-white/10 pt-4">
+      <a href="/admin/account" class="side-link <%= path.startsWith('/admin/account') ? 'active' : '' %>"><span class="material-symbols-outlined">account_circle</span><span class="flex-1 truncate"><%= admin.username %></span><% if (admin.role === 'super') { %><span class="font-mono text-[9px] uppercase text-lime-300">super</span><% } %></a>
+      <a href="/" target="_blank" class="side-link"><span class="material-symbols-outlined">open_in_new</span><%= ka ? 'საიტის ნახვა' : 'View site' %></a>
+      <form method="post" action="/admin/logout"><button class="side-link w-full"><span class="material-symbols-outlined">logout</span><%= ka ? 'გასვლა' : 'Log out' %></button></form>
+    </div>
+  </aside>
+
+  <div class="min-w-0">
+    <header class="sticky top-0 z-40 flex h-16 items-center justify-between gap-3 border-b border-forest-100 bg-white/80 px-4 backdrop-blur-xl sm:px-6 dark:border-graphite-600 dark:bg-graphite-900/80">
+      <div class="flex min-w-0 items-center gap-3">
+        <button type="button" data-menu-toggle aria-controls="admin-nav" aria-expanded="false" class="grid h-9 w-9 place-items-center rounded-full border border-forest-100 lg:hidden dark:border-graphite-600 dark:text-forest-50" aria-label="Menu"><span class="material-symbols-outlined">menu</span></button>
+        <h1 class="truncate text-lg font-semibold text-forest-900 dark:text-white"><%= locals.pageTitle || '' %></h1>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center rounded-full border border-forest-100 bg-white p-0.5 text-xs font-semibold dark:border-graphite-600 dark:bg-graphite-800">
+          <a href="/lang/ka" class="rounded-full px-2.5 py-1 <%= lang === 'ka' ? 'bg-forest-800 text-white dark:bg-lime-400 dark:text-forest-900' : 'text-forest-600 dark:text-forest-200' %>">KA</a>
+          <a href="/lang/en" class="rounded-full px-2.5 py-1 <%= lang === 'en' ? 'bg-forest-800 text-white dark:bg-lime-400 dark:text-forest-900' : 'text-forest-600 dark:text-forest-200' %>">EN</a>
+        </div>
+        <button type="button" data-theme-toggle class="grid h-9 w-9 place-items-center rounded-full border border-forest-100 bg-white text-forest-700 dark:border-graphite-600 dark:bg-graphite-800 dark:text-lime-300" aria-label="Theme">
+          <span class="material-symbols-outlined dark:hidden">dark_mode</span><span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+        </button>
+        <% if (locals.action) { %><a href="<%= action.href %>" class="btn-lime btn-sm sm:px-4 sm:py-2 sm:text-sm"><span class="material-symbols-outlined text-base">add</span><span class="hidden sm:inline"><%= action.label %></span></a><% } %>
+      </div>
+    </header>
+    <main class="px-4 py-6 sm:px-6 lg:px-8">
+      <% if (flash) { %>
+        <div class="mb-5 flex items-center gap-3 rounded-xl p-4 text-sm <%= flash.type === 'err' ? 'bg-red-50 text-red-800 dark:bg-red-950/40 dark:text-red-200' : 'bg-lime-100 text-forest-900 dark:bg-lime-400/15 dark:text-lime-200' %>" role="status">
+          <span class="material-symbols-outlined"><%= flash.type === 'err' ? 'error' : 'check_circle' %></span><%= flash.text %>
+        </div>
+      <% } %>

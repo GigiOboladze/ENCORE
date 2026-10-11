@@ -1,0 +1,32 @@
+<% const ka = lang === 'ka'; const S = { new: ka ? 'ახალი' : 'New', in_progress: ka ? 'მზადდება' : 'In progress', ready: ka ? 'მზადაა' : 'Ready', done: ka ? 'დასრულდა' : 'Done', cancelled: ka ? 'გაუქმდა' : 'Cancelled' }; %>
+<%- include('_top', { pageTitle: ka ? 'შეკვეთები' : 'Orders' }) %>
+<div class="mb-4 flex flex-wrap gap-2">
+  <a href="/admin/orders" class="nav-link <%= !status ? 'active' : '' %>"><%= t('common.all') %></a>
+  <% statuses.forEach(s => { %><a href="/admin/orders?status=<%= s %>" class="nav-link <%= status === s ? 'active' : '' %>"><%= S[s] %></a><% }) %>
+</div>
+<div class="table-wrap">
+  <table class="tbl">
+    <thead><tr><th>#</th><th><%= ka ? 'თარიღი' : 'Date' %></th><th><%= ka ? 'პროდუქტი' : 'Product' %></th><th><%= ka ? 'რაოდ.' : 'Qty' %></th><th><%= ka ? 'კლიენტი' : 'Customer' %></th><th><%= ka ? 'მიღება' : 'Receive' %></th><th><%= ka ? 'სტატუსი' : 'Status' %></th><th></th></tr></thead>
+    <tbody>
+      <% orders.forEach(o => { %>
+        <tr>
+          <td class="font-mono text-xs">#<%= o.id %></td>
+          <td class="whitespace-nowrap font-mono text-xs text-ink-soft dark:text-forest-300"><%= o.created_at.slice(0, 16) %></td>
+          <td class="min-w-[160px] font-medium"><%= o.product_name || '—' %><% if (o.note) { %><div class="mt-1 max-w-xs text-xs font-normal text-ink-soft dark:text-forest-300"><%= o.note %></div><% } %></td>
+          <td class="font-mono"><%= o.quantity %></td>
+          <td class="min-w-[170px]"><div class="font-medium"><%= o.name %></div><a href="tel:<%= o.phone %>" class="text-xs text-forest-600 hover:underline dark:text-lime-300"><%= o.phone %></a><% if (o.email) { %><div class="text-xs text-ink-soft"><%= o.email %></div><% } %><% if (o.city) { %><div class="text-xs text-ink-soft"><%= o.city %></div><% } %></td>
+          <td class="whitespace-nowrap text-xs"><%= o.delivery === 'delivery' ? t('order.deliver') : t('order.pickup') %></td>
+          <td>
+            <form method="post" action="/admin/orders/<%= o.id %>/status" class="flex items-center gap-2">
+              <span class="status-<%= o.status %>"><%= S[o.status] %></span>
+              <select name="status" class="input !w-auto !py-1.5 text-xs" onchange="this.form.submit()" aria-label="Status"><% statuses.forEach(s => { %><option value="<%= s %>" <%= o.status === s ? 'selected' : '' %>><%= S[s] %></option><% }) %></select>
+            </form>
+          </td>
+          <td><form method="post" action="/admin/orders/<%= o.id %>/delete" data-confirm="<%= ka ? 'წავშალო შეკვეთა #' + o.id + '?' : 'Delete order #' + o.id + '?' %>"><button class="grid h-8 w-8 place-items-center rounded-full text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40" aria-label="<%= t('common.delete') %>"><span class="material-symbols-outlined text-lg">delete</span></button></form></td>
+        </tr>
+      <% }) %>
+      <% if (!orders.length) { %><tr><td colspan="8" class="py-10 text-center text-ink-soft"><%= ka ? 'შეკვეთები ჯერ არ არის.' : 'No orders yet.' %></td></tr><% } %>
+    </tbody>
+  </table>
+</div>
+<%- include('_bottom') %>

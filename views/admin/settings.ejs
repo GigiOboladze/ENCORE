@@ -1,0 +1,30 @@
+<% const ka = lang === 'ka'; %>
+<%- include('_top', { pageTitle: ka ? 'საიტის პარამეტრები' : 'Site settings' }) %>
+<form method="post" action="/admin/settings" class="grid gap-5 xl:grid-cols-2">
+  <section class="card card-pad space-y-4">
+    <h2 class="label-mono">01 · <%= ka ? 'მთავარი გვერდის ტექსტი' : 'Homepage text' %></h2>
+    <label class="field"><span class="field-label"><%= ka ? 'სათაური (ქართ.)' : 'Headline (KA)' %></span><input class="input" name="hero_title_ka" maxlength="200" value="<%= s.hero_title_ka %>"></label>
+    <label class="field"><span class="field-label"><%= ka ? 'სათაური (ინგლ.)' : 'Headline (EN)' %></span><input class="input" name="hero_title_en" maxlength="200" value="<%= s.hero_title_en %>"></label>
+    <label class="field"><span class="field-label"><%= ka ? 'ქვესათაური (ქართ.)' : 'Subtitle (KA)' %></span><textarea class="input !min-h-[80px]" name="hero_sub_ka" maxlength="500"><%= s.hero_sub_ka %></textarea></label>
+    <label class="field"><span class="field-label"><%= ka ? 'ქვესათაური (ინგლ.)' : 'Subtitle (EN)' %></span><textarea class="input !min-h-[80px]" name="hero_sub_en" maxlength="500"><%= s.hero_sub_en %></textarea></label>
+  </section>
+  <section class="card card-pad space-y-4">
+    <h2 class="label-mono">02 · <%= ka ? 'საკონტაქტო ინფორმაცია' : 'Contact details' %></h2>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <label class="field"><span class="field-label"><%= t('contact.phone') %></span><input class="input" name="phone" maxlength="40" value="<%= s.phone %>"></label>
+      <label class="field"><span class="field-label"><%= t('contact.email') %></span><input class="input" name="email" type="email" maxlength="120" value="<%= s.email %>"></label>
+      <label class="field"><span class="field-label"><%= t('contact.address') %> (KA)</span><input class="input" name="address_ka" maxlength="200" value="<%= s.address_ka %>"></label>
+      <label class="field"><span class="field-label"><%= t('contact.address') %> (EN)</span><input class="input" name="address_en" maxlength="200" value="<%= s.address_en %>"></label>
+      <label class="field"><span class="field-label"><%= t('contact.hours') %> (KA)</span><input class="input" name="hours_ka" maxlength="120" value="<%= s.hours_ka %>"></label>
+      <label class="field"><span class="field-label"><%= t('contact.hours') %> (EN)</span><input class="input" name="hours_en" maxlength="120" value="<%= s.hours_en %>"></label>
+    </div>
+    <h2 class="label-mono pt-2">03 · <%= ka ? 'სოციალური ქსელები' : 'Social links' %></h2>
+    <div class="grid gap-4 sm:grid-cols-3">
+      <label class="field"><span class="field-label">Facebook</span><input class="input" name="facebook" type="url" placeholder="https://" value="<%= s.facebook %>"></label>
+      <label class="field"><span class="field-label">Instagram</span><input class="input" name="instagram" type="url" placeholder="https://" value="<%= s.instagram %>"></label>
+      <label class="field"><span class="field-label">LinkedIn</span><input class="input" name="linkedin" type="url" placeholder="https://" value="<%= s.linkedin %>"></label>
+    </div>
+  </section>
+  <div class="xl:col-span-2"><button class="btn-lime px-6 py-3"><span class="material-symbols-outlined text-base">save</span><%= t('common.save') %></button></div>
+</form>
+<%- include('_bottom') %>

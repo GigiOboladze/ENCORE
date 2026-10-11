@@ -1,0 +1,14 @@
+<%# Vertical column chart. Params: items [{label, value}] %>
+<% const maxV = Math.max(1, ...items.map(i => i.value)); %>
+<div class="flex h-52 items-stretch gap-3 pt-6">
+  <% items.forEach((i, idx) => { %>
+    <div class="flex flex-1 flex-col items-center gap-2">
+      <div class="relative flex w-full flex-1 items-end">
+        <div data-bar="v" class="relative w-full rounded-t-lg transition-[height] duration-1000 ease-out <%= idx === items.length - 1 ? 'bg-lime-400' : 'bg-forest-600/80 dark:bg-forest-500' %>" style="height: <%= Math.max(3, Math.round(i.value / maxV * 100)) %>%">
+          <span class="absolute -top-5 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[11px] text-forest-700 dark:text-lime-300/90"><%= fmt(i.value) %></span>
+        </div>
+      </div>
+      <span class="font-mono text-[11px] text-ink-soft dark:text-forest-300"><%= i.label %></span>
+    </div>
+  <% }) %>
+</div>

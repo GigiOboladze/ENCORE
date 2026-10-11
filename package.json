@@ -1,0 +1,27 @@
+{
+  "name": "encore-site",
+  "version": "1.0.0",
+  "description": "ENCORE — second life for lithium batteries (GITA Circular Economy Hackathon)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "dev": "node --env-file-if-exists=.env --watch server.js",
+    "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/app.css --minify",
+    "build": "npm run build:css",
+    "watch:css": "tailwindcss -i ./public/css/input.css -o ./public/css/app.css --watch"
+  },
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-session": "^2.1.1",
+    "ejs": "^3.1.10",
+    "express": "^4.22.3",
+    "multer": "^2.4.0",
+    "qrcode": "^1.5.4",
+    "tailwindcss": "^3.4.19"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=22.13"
+  }
+}
